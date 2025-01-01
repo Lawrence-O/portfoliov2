@@ -22,12 +22,12 @@ interface ResumeContainerProps {
   skills: skill[];
 }
 
-export function ResumeContainer(props: ResumeContainerProps) {
+function ResumeContainer(props: ResumeContainerProps) {
   const [currentSection, setCurrentSection] = React.useState("education");
   const sectionsRef = useRef<(HTMLElement | null)[]>([]);
   useEffect(() => {
     const handleActiveSection = () => {
-      var section = getVisibleSection(sectionsRef.current);
+      const section = getVisibleSection(sectionsRef.current);
       if (section) {
         setCurrentSection(section.id);
       }
@@ -83,7 +83,7 @@ export function ResumeContainer(props: ResumeContainerProps) {
   );
 }
 
-export default function Resume() {
+export default function Page() {
   return (
     <div className="flex flex-col h-screen">
       <NavBar />

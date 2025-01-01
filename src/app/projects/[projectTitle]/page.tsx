@@ -1,4 +1,4 @@
-import { Layout } from "@/app/components/layout";
+import Layout from "@/app/components/layout";
 import { Project } from "@/app/components/project/interfaces";
 import { ProjectBody } from "@/app/components/project/ProjectBody";
 import { notFound } from "next/navigation";

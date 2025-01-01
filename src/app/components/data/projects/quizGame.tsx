@@ -14,222 +14,407 @@ export const ultimateQuiz: Project = {
         {
           type: "text",
           content:
-            "The Ultimate Quiz is a dynamic quiz game born from my exploration of web scraping and game design. This project uniquely combines the real-time acquisition of data, specifically historical information about various rulers, with engaging gameplay mechanics. Instead of relying on static question banks, the game dynamically generates content using web scraping techniques and enhances the player experience with a personalized mastery system that adapts to their learning curve. This system is built upon the principles of spaced repetition, ensuring effective knowledge retention and a consistently challenging experience.",
+            "The Ultimate Quiz is a dynamic and educational quiz game that was created through an exploration of web scraping and game design principles. This project uniquely merges real-time data acquisition, specifically from historical information about rulers, with engaging gameplay. Rather than relying on static question banks, the game dynamically generates its content through web scraping techniques, thereby offering a unique and personalized learning experience for each user. A key element is the integration of a personalized mastery system, which adapts to the player's learning curve and ensures a consistently challenging and effective learning process through spaced repetition.",
         },
       ],
     },
     {
-      title: "Game Structure and Ruler Data",
+      title: "Dynamic Game Structure and Data Handling",
       navName: "Ruler Data",
       navRef: "game-structure",
       content: [
         {
           type: "text",
           content:
-            "The game’s core is its sophisticated data structure, where each session is centered around historical rulers. The game scrapes specific details from their Wikipedia pages using BeautifulSoup. This includes crucial information such as birth and death dates, reign details, and successors. This scraped data isn't simply displayed; it's the engine behind the dynamic question generation, ensuring each game is unique and educational. The Ruler class is key to organizing this data. It encapsulates all details of a ruler, including their name, associated Wikipedia URL, and the scraped information. This approach makes the game scalable and extensible by making it easy to add new rulers without overhauling the underlying system. The class is also responsible for extracting the ruler's image, significantly enhancing visual engagement.",
+            "At the heart of The Ultimate Quiz lies a sophisticated data structure centered around historical rulers. The game utilizes web scraping techniques with BeautifulSoup to extract specific details from Wikipedia pages, including crucial information such as birth and death dates, reign details, and successors. This scraped data is then used to power dynamic question generation, ensuring each game is both unique and educational. The 'Ruler' class plays a pivotal role in organizing this data. By encapsulating all details of a ruler—including their name, associated Wikipedia URL, and scraped information—the game becomes scalable and extensible, as adding new rulers is seamless. Additionally, the class is responsible for extracting the ruler's image, which greatly enhances visual engagement.",
         },
         {
           type: "text",
           content:
-            "The Ruler class effectively serves as the foundation for the game's question-generating process. By encapsulating each ruler’s data into an object, it allows for an efficient, maintainable, and easily expandable system. This object-oriented approach isolates the web scraping logic from the rest of the game. This clear separation of concerns makes the code much easier to understand and maintain.",
-        },
+            "The 'Ruler' class serves as the foundational component for the game’s question-generating process. By encapsulating each ruler's data into an object, the game maintains an efficient, organized, and easily expandable system. This object-oriented approach isolates the web scraping logic from the core game mechanics, providing a clear separation of concerns that greatly improves the maintainability and readability of the code.",
+        }
       ],
     },
-    {
-      title: "Mastery System and Player Progression",
+     {
+      title: "Personalized Mastery System",
       navName: "Mastery System",
       navRef: "mastery-system",
       content: [
         {
           type: "text",
           content:
-            "To make The Ultimate Quiz both educational and fun, I've implemented a mastery system inspired by the Leitner System and SuperMemo algorithms. This system is central to managing player learning and progression. It actively monitors player performance on each question and adjusts the question frequency accordingly. Questions that players answer correctly with consistency appear less often, while incorrect ones are presented more frequently. This approach reinforces learning and knowledge retention. Furthermore, the system dynamically adjusts question difficulty, ensuring that the game becomes more challenging as the player improves, creating a dynamic and personalized learning environment.",
+           "To ensure that The Ultimate Quiz is both educational and enjoyable, I implemented a mastery system inspired by the Leitner System and SuperMemo algorithms. This system is fundamental to managing the player's learning progression. It actively tracks player performance on each question, adjusting the frequency of questions accordingly. Questions answered correctly consistently appear less often, while incorrect answers are presented more frequently, strengthening knowledge retention. Furthermore, the system dynamically adjusts the question difficulty, providing a personalized learning environment that evolves with the player's skills.",
         },
         {
           type: "text",
           content:
-            "The MasterySystem class manages the entire mastery system. This class keeps track of a player’s learning and organizes questions into different 'levels,' representing the stages of mastery. The system is not static and is updated with methods like 'updateStats' and 'updateLevel.' The 'calculateDifficulty' method adjusts the question difficulty using the player's historical performance data. A custom linear regression algorithm is also used to predict the player's future performance on a question. These combined features offer a unique experience to each player. It maintains player engagement and encourages continuous learning throughout the game.",
-        },
+            "The 'MasterySystem' class is the core of the adaptive learning experience. It tracks each player's learning progress, organizing questions into different 'levels' that represent stages of mastery. The system is dynamic and updated with methods such as 'updateStats' and 'updateLevel.' The 'calculateDifficulty' method adjusts question difficulty based on the player’s performance history. In addition, a custom linear regression algorithm predicts the player's future performance on a question. These combined features create a unique learning experience for each player, promoting continuous learning and engagement throughout the game.",
+        }
       ],
     },
     {
-      title: "Core Mastery System Implementation",
+      title: "Core Mastery System Logic",
       navName: "Core System",
       navRef: "core-mastery-system",
       content: [
         {
           type: "text",
           content:
-            "The adaptive learning within the game is primarily driven by the `MasterySystem` class. This class manages tracking player performance, adjusting question difficulty, and managing question frequency using the principles of the Leitner System and SuperMemo. This creates a personalized learning experience. The following code block showcases the core logic of this class:",
+            "The game's adaptive learning is driven by the 'MasterySystem' class, which is responsible for tracking player performance, adjusting question difficulty, and managing question frequency. It employs the principles of the Leitner System and SuperMemo to create a personalized learning experience. The code snippet below demonstrates the core logic of the 'MasterySystem' class:",
         },
         {
           type: "code",
-          content: `
-/**
- *  Mastery System Class: Manages question difficulty and frequency.
- */
-class MasterySystem {
-    /**
-     * @param {number} numLevels - The number of levels in the mastery system.
-     * @param {Array} listQuestions - The list of all questions.
-     */
-    constructor(numLevels, listQuestions) {
-      this.numLevels = numLevels;
-      this.listQuestions = listQuestions;
-      this.stats = {
-        Successor: [0, 0],
-        BirthDate: [0, 0],
-        BirthPlace: [0, 0],
-        DeathDate: [0, 0],
-        DeathPlace: [0, 0],
-        AgeOfDeath: [0, 0],
-        Spouse: [0, 0],
-        House: [0, 0],
-        Total: 0,
-      };
-      this.appearedQTypes = {
-        Successor: 0,
-        BirthDate: 0,
-        BirthPlace: 0,
-        DeathDate: 0,
-        DeathPlace: 0,
-        AgeOfDeath: 0,
-        Spouse: 0,
-        House: 0,
-      };
-      this.levels = this.initializeStartingBox(numLevels);
-      this.oldQuestions = [];
-      this.numCycles = 0;
-      this.recycleQ = false;
-    }
+          content: `"""
+MasterySystem Class: Manages question difficulty and frequency using a spaced
+repetition approach.
+"""
+class masterySystem(object):
+    def __init__(self, numLevels, listQuestions):
+        """
+        Initializes the mastery system.
 
-    /**
-     * Initializes the starting boxes for the mastery system.
-     * @param {number} numLevels The number of levels for the mastery system.
-     * @return {Array} The initialized 2D array representing the levels.
-     */
-    initializeStartingBox(numLevels){
-      //Implementation of the mastery level initialization
-        return twoD;
-    }
-    /**
-     * Calculates the difficulty of a question based on player performance.
-     * @param {object} mcQuestion - The multiple-choice question object.
-     * @param {boolean} correct - Whether the answer was correct.
-     * @param {number} currRetrivalTime - The time taken to answer the question.
-     * @return {number} The new difficulty of the question.
-     */
-    calculateDifficulty(mcQuestion, correct, currRetrivalTime) {
-      //Implementation to calculate question difficulty
-      return currDiff;
-    }
-    /**
-     * Updates the game stats and the player's level.
-     * @param {object} mcQuestion - The multiple-choice question object.
-     * @param {string} pickedAnswer - The answer the player picked.
-     * @param {boolean} correct - Whether the answer was correct.
-     * @param {number} retrivalTime - The time taken to answer the question.
-     */
-    updateStats(mcQuestion, pickedAnswer, correct, retrivalTime) {
-       // Implementation to update game stats and question level
-    }
-   /**
-     * Updates the level of a question based on the player's performance.
-     * @param {object} mcQuestion The multiple-choice question object.
-     * @param {boolean} correct Whether the answer was correct.
-     * @param {number} currRetrivalTime The time taken to answer the question.
-    */
-    updateLevel(mcQuestion, correct, currRetrivalTime){
-      //Implementation of updating question level based on correctness and time
-    }
-     /**
-     * Finds the next question type to be asked.
-     * @return {string} The question type to be asked.
-     */
-    findNextQType() {
-      // Implementation to find the next question type
-      return qType;
-    }
-    /**
-     * Performs linear regression on a list of y-points.
-     * @param {Array<number>} listYPoints The list of y-points for regression.
-     * @return {Array<number>} An array containing the slope and the anticipated y-value.
-     */
-    linearRegression(listYPoints) {
-      // Implementation for linear regression
-      return [m, newTime];
-    }
+        Args:
+            numLevels (int): The number of levels in the mastery system.
+            listQuestions (list): A list of all multiple-choice questions.
+        """
+        self.numLevels = numLevels
+        self.listQuestions = listQuestions
+        # stats dictionary tracks correct/incorrect answers
+        self.stats = {'Successor': (0, 0), 'BirthDate': (0, 0),
+                      'BirthPlace': (0, 0), 'DeathDate': (0, 0),
+                      'DeathPlace': (0, 0), 'AgeOfDeath': (0, 0),
+                      'Spouse': (0, 0), 'House': (0, 0), 'Total': 0}
+        # appearedQTypes tracks how many times each question type appeared
+        self.appearedQTypes = {'Successor': 0, 'BirthDate': 0, 'BirthPlace': 0,
+                               'DeathDate': 0, 'DeathPlace': 0, 'AgeOfDeath': 0,
+                               'Spouse': 0, 'House': 0}
+        # initializes the levels/boxes
+        self.levels = self.initializeStartingBox(numLevels)
+        # oldQuestions list tracks previous questions
+        self.oldQuestions = []
+        # tracks how many times the recycle self question happened
+        self.numCycles = 0
+        # flags whether the questions were recycled
+        self.recycleQ = False
+    def initializeStartingBox(self, numLevels):
+        """
+        Initializes the levels of the mastery system.
 
-     /**
-     * Finds a recycled question based on question type.
-     * @param {string} qType The type of question to look for.
-     * @return {object} The recycled multiple-choice question object.
-     */
-    findRecycledQuestion(qType){
-      // Implementation to find the recycled question
-      return mcQuestion;
-    }
-    /**
-     * Finds a question type in the level box.
-     * @return {string} The question type to be asked.
-     */
-    findQTypeInLevels(){
-        //Implementation to find question type within level box
-        return qType;
-    }
-     /**
-     * Recycles self questions, shuffles them and sets the recycle flag to true.
-     */
-    recycleSelfQuestions(){
-        //Implementation to recycle all previous questions
-    }
-     /**
-     * Gets the next question from the list of questions.
-     * @return {object} The next multiple-choice question object.
-     */
-    getNextQuestion(){
-        //Implementation to get next question using find next question type or recycled question
-        return mcQuestion;
-    }
-}
-                    `,
-          codeLang: "javascript",
+        Args:
+            numLevels (int): The number of levels to initialize.
+
+        Returns:
+            list: A 2D list representing the levels of the mastery system.
+        """
+        twoD = [[] for row in range(numLevels)]
+        for qType in self.appearedQTypes.keys():
+            twoD[0].append(qType) #Add all the Question Types
+        return twoD
+    
+    def calculateDifficulty(self, mcQuestion, correct, currRetrivalTime):
+        """
+        Calculates the difficulty of a question based on player performance.
+
+        Args:
+            mcQuestion (multipleChoiceQuestion): The question being evaluated.
+            correct (bool): Whether the player answered correctly.
+            currRetrivalTime (float): Time taken to answer the question.
+
+        Returns:
+            int: The new difficulty of the question.
+        """
+        currDiff = mcQuestion.getDifficulty()
+        if not self.recycleQ:
+            if correct:
+                return currDiff - 1 #Decrease Difficulty if correct
+            else:
+                return currDiff + 1 #Increase Difficulty if incorrect
+        else: #Linear Regression implementation
+            slope_time, anticipatedTime = self.linearRegression(
+                mcQuestion.getRetrivalTime())
+            if anticipatedTime < 2.3:
+                anticipatedTime = 2.3
+            slope_difficulty, anticipatedDifficulty = self.linearRegression(
+                mcQuestion.getPastDifficulties())
+            timeWeight = 0.2
+            if correct:
+                if anticipatedTime > currRetrivalTime:
+                     timeWeight = 0.25
+                return currDiff - timeWeight * anticipatedDifficulty
+            else:
+                if anticipatedTime < currRetrivalTime:
+                     timeWeight = 0.35
+                return currDiff + anticipatedDifficulty * timeWeight
+    
+    def updateStats(self, mcQuestion, pickedAnswer, correct, retrivalTime):
+        """
+        Updates the statistics of the game based on player input.
+
+        Args:
+            mcQuestion (multipleChoiceQuestion): The question answered.
+            pickedAnswer (str): The answer the player selected.
+            correct (bool): Whether the player was correct.
+            retrivalTime (float): Time taken to answer the question.
+        """
+        numRight, numWrong = self.stats[mcQuestion.getQuestion().
+                                       getQuestionType()]
+        currDiff = mcQuestion.getDifficulty()
+        mcQuestion.setDifficulty(self.calculateDifficulty(mcQuestion,
+                                                        correct,
+                                                        retrivalTime))
+        mcQuestion.addRetrivalTime(retrivalTime)
+        mcQuestion.addPastDifficulties(currDiff)
+        if correct:
+            numRight += 1
+        else:
+            numWrong += 1
+            mcQuestion.addWrongAns(pickedAnswer)
+        self.stats[mcQuestion.getQuestion().getQuestionType()] = (numRight,
+                                                                 numWrong)
+        self.appearedQTypes[mcQuestion.getQuestion().getQuestionType()] += 1
+        self.stats['Total'] += 1
+        self.oldQuestions.append((mcQuestion, correct))
+        self.updateLevel(mcQuestion, correct, retrivalTime)
+    
+    def updateLevel(self, mcQuestion, correct, currRetrivalTime):
+        """
+        Updates the level of a question in the mastery system based on
+        player performance.
+
+        Args:
+            mcQuestion (multipleChoiceQuestion): The question answered.
+            correct (bool): Whether the player was correct.
+            currRetrivalTime (float): Time taken to answer.
+        """
+        currentPos = (None, None)
+        # find the current pos of the question
+        for i in range(len(self.levels)):
+            for j in range(len(self.levels[i])):
+                if (mcQuestion.getQuestion().getQuestionType() ==
+                        self.levels[i][j]):
+                    currentPos = (i, j)
+        currRow, currCol = currentPos
+        if not self.recycleQ:
+            if correct:
+                if currRow + 1 >= len(self.levels):
+                   self.levels[currRow].append(mcQuestion.getQuestion().
+                                               getQuestionType())
+                else:
+                    self.levels[currRow + 1].append(mcQuestion.getQuestion().
+                                                    getQuestionType())
+            else:
+                if currRow - 1 < 0:
+                    self.levels[currRow].append(mcQuestion.getQuestion().
+                                                getQuestionType())
+                else:
+                    self.levels[currRow - 1].append(mcQuestion.getQuestion().
+                                                    getQuestionType())
+        else:
+            slope_difficulty, anticipatedDifficulty = self.linearRegression(
+                mcQuestion.getPastDifficulties())
+            dRow = 1
+            if slope_difficulty < 0 and abs(slope_difficulty) > 1.25:
+                dRow = 2
+            if correct:
+                if currRow + dRow >= len(self.levels):
+                    self.levels[currRow].append(mcQuestion.getQuestion().
+                                                getQuestionType())
+                else:
+                    self.levels[currRow + dRow].append(mcQuestion.getQuestion().
+                                                     getQuestionType())
+            else:
+                if currRow - dRow < 0:
+                    self.levels[currRow].append(mcQuestion.getQuestion().
+                                                getQuestionType())
+                else:
+                     self.levels[currRow - dRow].append(mcQuestion.getQuestion().
+                                                        getQuestionType())
+
+    def findNextQType(self):
+        """
+        Finds the next question type to be asked based on past performance.
+
+        Returns:
+            str: The question type to be asked.
+        """
+        minQAppearance = set()
+        minNum = None
+        for qType in self.appearedQTypes:
+            if minNum is None or self.appearedQTypes[qType] < minNum:
+                minNum = self.appearedQTypes[qType]
+                minQAppearance = {qType}
+            elif self.appearedQTypes[qType] == minNum:
+                minQAppearance.add(qType)
+        if len(minQAppearance) == 0:
+            print("Error")
+        if len(minQAppearance) == 1:
+            return list(minQAppearance)[0]
+        elif len(minQAppearance) > 1 and minNum > 2:
+            mostNumDiff = None
+            mostDiffQuestion = None
+            for mcQuestion, correctness in self.oldQuestions:
+                if (mostNumDiff is None or (correctness is False and
+                        mostNumDiff > mcQuestion.getDifficulty() and
+                        mcQuestion.getQuestion().getQuestionType() in
+                        minQAppearance)):
+                    mostNumDiff = mcQuestion.getDifficulty()
+                    mostDiffQuestion = mcQuestion
+            if mostDiffQuestion is not None and mostNumDiff is not None:
+                return mostDiffQuestion.getQuestion().getQuestionType()
+            else:
+                index = random.randint(0, len(minQAppearance)-1)
+                return list(minQAppearance)[index]
+        else:
+            return random.choice(list(minQAppearance))
+    
+    def linearRegression(self, listYPoints):
+        """
+        Performs linear regression on a list of y-points.
+        https://www.statisticshowto.com/probability-and-statistics/
+        regression-analysis/find-a-linear-regression-equation/
+
+        Args:
+            listYPoints (list): A list of y-values.
+
+        Returns:
+            tuple: A tuple containing the slope (m) and the anticipated
+                   y-value.
+        """
+        coordinates = []
+        if len(listYPoints) == 0:
+            print("Linear Regression Error")
+            return None
+        for i in range(len(listYPoints)):
+            coordinates.append((i, listYPoints[i]))
+        # b = (sum(y) * sum(x^2) - sum(x) * sum(xy)) / (n*sum(x^2) - sum(x)^2)
+        b = ((sum(listYPoints) * sum([x**2 for x, y in coordinates])) -
+             (sum([x for x, y in coordinates]) *
+              sum([x * y for x, y in coordinates]))) / 
+            (len(listYPoints) * sum([x**2 for x, y in coordinates]) -
+             sum([x for x, y in coordinates])**2)
+        # m = (n*sum(xy) - sum(x)*sum(y)) / (n*sum(x^2) - sum(x)^2)
+        m = (len(listYPoints) * sum([x * y for x, y in coordinates]) -
+             (sum([x for x, y in coordinates]) *
+              sum([y for x, y in coordinates]))) / 
+            (len(listYPoints) * sum([x**2 for x, y in coordinates]) -
+             sum([x for x, y in coordinates])**2)
+        newTime = m * (len(listYPoints) + 1) + b
+        return m, newTime
+    
+    def findRecycledQuestion(self, qType):
+        """
+        Finds a recycled question based on question type.
+
+        Args:
+            qType (str): The type of question to look for.
+
+        Returns:
+            multipleChoiceQuestion: The recycled multiple-choice question
+                                    object.
+        """
+        largestDecreaseInTime_nSlope = None
+        largestDecreaseInTimeQuestion_nSlope = None
+        largestDecreaseInTime_pSlope = None
+        largestDecreaseInTimeQuestion_pSlope = None
+        for mcQuestion in self.listQuestions:
+            if mcQuestion.getQuestion().getQuestionType() == qType:
+                retrivalTime = mcQuestion.getRetrivalTime()
+                slope, newTime = self.linearRegression(retrivalTime)
+                #Positive Slope --> Got worse; #Negative Slope --> Got Better
+                if slope < 0:
+                    if (largestDecreaseInTime_nSlope is None or
+                            newTime < largestDecreaseInTime_nSlope):
+                        largestDecreaseInTime_nSlope = newTime
+                        largestDecreaseInTimeQuestion_nSlope = mcQuestion
+                    elif math.isclose(newTime, largestDecreaseInTime_nSlope,
+                                     rel_tol=1e-2):
+                        if (mcQuestion.getDifficulty() >
+                                largestDecreaseInTimeQuestion_nSlope.
+                                getDifficulty()):
+                            largestDecreaseInTime_nSlope = newTime
+                            largestDecreaseInTimeQuestion_nSlope = mcQuestion
+                elif slope > 0:
+                    if (largestDecreaseInTime_pSlope is None or
+                            newTime > largestDecreaseInTime_pSlope):
+                         largestDecreaseInTime_pSlope = newTime
+                         largestDecreaseInTimeQuestion_pSlope = mcQuestion
+                    elif math.isclose(newTime, largestDecreaseInTime_pSlope,
+                                     rel_tol=1e-1):
+                        if (mcQuestion.getDifficulty() >
+                                largestDecreaseInTimeQuestion_pSlope.
+                                getDifficulty()):
+                            largestDecreaseInTime_pSlope = newTime
+                            largestDecreaseInTimeQuestion_pSlope = mcQuestion
+        if largestDecreaseInTime_pSlope is not None:
+            index = self.listQuestions.index(largestDecreaseInTimeQuestion_pSlope)
+            self.listQuestions.pop(index)
+            return largestDecreaseInTimeQuestion_pSlope
+        elif largestDecreaseInTime_nSlope is not None:
+            index = self.listQuestions.index(largestDecreaseInTimeQuestion_nSlope)
+            self.listQuestions.pop(index)
+            return largestDecreaseInTimeQuestion_nSlope
+        else:
+            return self.listQuestions.pop(0)
+    def getNextQuestion(self):
+        """
+        Gets the next question from the list of questions.
+
+        Returns:
+             multipleChoiceQuestion: The next multiple-choice question object.
+        """
+        if len(self.listQuestions) == 0:
+            self.recycleSelfQuestions()
+        if not self.recycleQ:
+            nextQType = self.findNextQType()
+            for i in range(len(self.listQuestions)):
+                if (self.listQuestions[i].getQuestion().getQuestionType() ==
+                        nextQType):
+                    result = self.listQuestions.pop(i)
+                    random.shuffle(self.listQuestions)
+                    self.developer_forceRecycle()
+                    return result
+        else:
+            nextQType = self.findQTypeInLevels()
+            nextQuestion = self.findRecycledQuestion(nextQType)
+            random.shuffle(self.listQuestions)
+            return nextQuestion`,
+          codeLang: "python",
           subtitle:
             "A snippet of the Mastery System implementation, showing key methods for question management.",
         },
       ],
     },
     {
-      title: "Question Generation and Multiple Choice System",
+      title: "Dynamic Question Generation",
       navName: "Question System",
       navRef: "question-generation",
-      content: [
+       content: [
         {
           type: "text",
           content:
-            "The game's question system is built to be highly dynamic. Each question is generated from ruler data and presented in an engaging multiple-choice format, making them more accessible and less predictable. The MultipleChoiceQuestion class is crucial for this. It creates answer choices using data from different rulers, preventing players from simply guessing based on one familiar name. Also, by tracking retrieval time—how long it takes a player to answer—the system can dynamically adjust the difficulty of the questions. Correct answers given quickly result in a lower difficulty, whereas incorrect or slow answers increase the difficulty, creating a tailored and adaptive experience.",
+            "The game’s question system was designed to be highly dynamic, with each question generated from ruler data and presented in an engaging multiple-choice format. This approach prevents predictability and ensures accessibility for players. The 'MultipleChoiceQuestion' class is a vital part of this system, responsible for creating varied answer choices using data from different rulers, thus preventing players from simply guessing based on one familiar name. The system also tracks retrieval time, dynamically adjusting question difficulty based on how quickly a player answers. Correct and rapid responses result in a lower difficulty, while incorrect or slow answers increase the difficulty, creating a highly personalized and adaptive experience.",
         },
         {
           type: "text",
           content:
-            "Each question is first created and managed by a Question class, which holds the question text, the correct answer and the associated ruler. From this Question class the multiple-choice list is then generated using a randomizing algorithm within the 'createMultipleChoice' method to ensure that each question is both challenging and varied. The ‘createResultAnswers’ method is responsible for ensuring that the correct answer is not always presented in the same position, preventing predictability. This careful design has created a game that is simple to understand yet complex enough to offer a very rewarding and engaging experience.",
-        },
+            "Each question is first created and managed by the 'Question' class, which holds the question text, the correct answer, and the associated ruler. The multiple-choice list is then generated using a randomization algorithm within the 'createMultipleChoice' method. Additionally, the 'createResultAnswers' method ensures that the correct answer is not always presented in the same position, enhancing unpredictability. This careful design has resulted in a game that is easy to understand yet offers a very rewarding and challenging experience.",
+        }
       ],
     },
     {
-      title: "User Interface and Additional Features",
+      title: "User Interface and Key Features",
       navName: "UI Features",
       navRef: "user-interface",
       content: [
         {
           type: "text",
           content:
-            "To enhance the overall user experience, I implemented several features that add to the game's usability and functionality. A Stats Screen provides a detailed overview of the player’s progress, highlighting both strengths and weaknesses. The Help Screen is always available to guide new players through the game mechanics. Additionally, the game leverages image scraping to fetch and display images of each ruler directly from Wikipedia. This significantly enriches the gameplay and adds a visual dimension to the learning experience. These elements ensure that the game is both easy to use and enjoyable for all players.",
+            "To enhance user experience, several key features were implemented to ensure the game is both usable and engaging. A dedicated Stats Screen provides a comprehensive overview of the player’s progress, highlighting both areas of strength and areas needing improvement. The Help Screen offers continuous guidance through the game mechanics, ensuring new users can quickly grasp the rules. Furthermore, the game dynamically fetches and displays images of each ruler directly from Wikipedia, enriching gameplay with a visual learning dimension. These features help ensure the game is both easy to use and enjoyable for all players.",
         },
         {
           type: "text",
           content:
-            "The design emphasizes both robustness and stability. The system is equipped with comprehensive error-handling capabilities, which is important for a web scraping-based application because source websites are always susceptible to unexpected changes. The game also uses a Linear Regression model to dynamically adjust difficulty levels based on the player's performance history. This ensures that the game remains consistently challenging yet attainable. These features create a game that is not only an engaging learning tool but is also reliable and user-friendly.",
+            "The game's design places a high emphasis on both robustness and stability. The system has comprehensive error handling, a crucial aspect for web scraping applications, as source websites are always subject to unexpected changes. Moreover, a Linear Regression model is employed to dynamically adjust difficulty levels according to the player's performance, ensuring that the game remains both challenging and attainable. These features combine to create a reliable and user-friendly learning tool.",
         },
       ],
     },
@@ -241,7 +426,7 @@ class MasterySystem {
         {
           type: "text",
           content:
-            "Through the development of 'The Ultimate Quiz,' I was able to explore the intricacies of web scraping, data parsing, and game development. The end result is an interactive tool that skillfully combines educational content with an engaging gaming structure. It effectively demonstrates the use of complex algorithms for providing personalized learning. This project clearly shows how different techniques and principles can be combined from various fields to create highly effective and interactive learning tools.",
+            "Through the development of The Ultimate Quiz, I gained valuable experience in web scraping, data parsing, and game development. The resulting project is an interactive tool that combines educational content with an engaging gaming framework. This project effectively demonstrates the use of complex algorithms for providing a personalized learning experience. This project illustrates how different techniques and principles from various fields can be combined to create effective and engaging learning applications.",
         },
       ],
     },
