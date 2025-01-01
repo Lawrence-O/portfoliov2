@@ -55,7 +55,7 @@ export function ProjectBody(props: { project: Project }) {
 
   useEffect(() => {
     const handleActiveSection = () => {
-      var section = getVisibleSection(sectionsRef.current);
+      const section = getVisibleSection(sectionsRef.current);
       if (section) {
         setActiveSection(section.id);
       }

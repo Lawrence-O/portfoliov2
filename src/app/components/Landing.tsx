@@ -18,7 +18,7 @@ function LandingBlurb() {
   return (
     <div className="flex flex-col justify-start w-[40rem]">
       <h1 className="text-2xl font-bold">HELLO</h1>
-      <h2 className="text-5xl font-bold">I'm Lawrence Onyango</h2>
+      <h2 className="text-5xl font-bold">I&#39;m Lawrence Onyango</h2>
       <p className="text-4xl">
         An engineer with a passion for robotics and software, constantly
         exploring creative ways to merge these fields and solve real-world

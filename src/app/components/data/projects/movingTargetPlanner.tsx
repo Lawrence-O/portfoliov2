@@ -2,52 +2,57 @@ import { Project } from "@/app/components/project/interfaces";
 
 export const movingTargetPlanner: Project = {
   title: "Real-Time Target Interception with Multi-Goal A*",
-  media: "/media/videos/movingTargetsVideo.mp4", // Add a URL or file path to media if available
+  media: "/media/videos/movingTargetsVideo.mp4",
   subtitle: "Spring 2024",
   section: [
     {
-      title: "Introduction",
-      content: [
-        {
-          type: "text",
-          content:
-            "The goal of this project was to develop a planner for a robot tasked with catching a moving target in a 2D grid world. The robot operates in an 8-connected grid, where it can move by at most one cell along the X, Y axes, or diagonally in each step. The planner minimizes the cost incurred by the robot (rather than the time it takes) while avoiding obstacles and high-cost areas in the grid.",
-        },
-      ],
+      title: "Project Introduction",
+      navName: "Introduction",
       navRef: "Introduction",
-    },
-    {
-      title: "Problem Statement",
       content: [
         {
           type: "text",
           content:
-            "The problem imposes several constraints and inputs. The gridworld includes a costmap specifying the traversal cost for each cell, represented as positive integers. A collision threshold determines cells the robot cannot traverse; any cell with a cost greater than or equal to this threshold is treated as an obstacle. The planner is given the start position of the robot and the trajectory of the target as a sequence of positions, such as [(5,6), (5,7), (4,5)]. The planner operates under real-time constraints, with the target moving at a speed of one step per second. The largest grid size is approximately 2000x2000 for graduate students and 200x200 for undergraduates.",
+            "This project focused on creating a robust motion planner for a robot tasked with intercepting a moving target within a 2D grid environment. The robot navigates the grid, which allows for 8-connected movement, meaning one cell in the X, Y, or diagonal directions at a time. The primary objective of the planner is to minimize the traversal cost for the robot, as opposed to minimizing the time taken, while avoiding obstacles and high-cost regions in the grid.",
         },
       ],
-      navRef: "Problem Statement",
     },
     {
-      title: "Algorithm Overview",
+      title: "Problem Definition and Constraints",
+      navName: "Problem Statement",
+      navRef: "Problem Statement",
       content: [
         {
           type: "text",
           content:
-            "The implemented planner utilizes a variant of Multi-Goal A*, treating the target’s trajectory as a series of dynamic goals. The algorithm operates in a 3D state space, defined as: <X,Y,T>. Where X and Y represent the robot’s position in the grid, and T represents the time step.",
+           "The problem involved several critical constraints and inputs. The grid environment includes a costmap, where each cell is assigned a positive integer that defines the traversal cost. A collision threshold was used to identify cells the robot cannot traverse. Cells with a cost equal to or higher than the collision threshold are treated as obstacles. The planner receives the starting position of the robot and the trajectory of the target which is a sequence of discrete positions such as `[(5,6), (5,7), (4,5)]`. Furthermore, the planner was constrained to operate in real-time, with the target moving one step per second. Finally, the size of the grid was limited to 2000x2000 for graduate students and 200x200 for undergraduate students.",
+        },
+      ],
+    },
+    {
+      title: "Multi-Goal A* Algorithm",
+      navName: "Algorithm Overview",
+      navRef: "Algorithm Overview",
+      content: [
+        {
+          type: "text",
+          content:
+            "The implemented solution is a variant of the Multi-Goal A* search algorithm that treats the target's trajectory as a dynamic series of goals. The planner operates within a 3D state space defined by `<X,Y,T>`, where X and Y represent the robot's coordinates in the grid, and T indicates the time step.",
         },
         {
             type: "text",
             content:
-              "The planner uses a priority queue (open-set) to ensure nodes are processed in ascending order of their total cost, prioritizing nodes with the lowest cost.",
+              "To prioritize exploration, the planner uses a priority queue (open-set) to ensure nodes are processed in ascending order of their total cost, which is the sum of the movement cost (`g-score`) and the estimated cost-to-goal (heuristic).",
           },
           {
             type: "text",
             content:
-              "When expanding nodes, the planner considers the eight possible moves in the 8-connected grid and a ninth option where the robot stays in its current position. This results in nine possible successor states for any node.",
-          },{
+             "When expanding nodes, the planner considers nine potential successor states. These states include the eight possible moves in the 8-connected grid, along with the option for the robot to remain in its current position.",
+          },
+          {
             type: "code",
             codeLang: "cpp",
-            subtitle: "Multi-Goal A*",
+            subtitle: "Core Logic of the Multi-Goal A* Algorithm",
             content: `/**
  * @brief Implements the Multi-Goal A* pathfinding algorithm.
  *
@@ -143,7 +148,7 @@ std::vector<Node> multi_goal_A(const int* map, int x_size, int y_size,
           {
             type: "text",
             content:
-              "The planner terminates when the current node matches one of the target’s positions at the corresponding time step. For computationally large maps, a relaxation is applied when less than of the remaining time is available. In such cases, the algorithm returns a suboptimal path to ensure the target is caught, albeit at a higher cost.",
+                "The algorithm terminates when the current node matches one of the target’s positions at the corresponding time step. When the remaining time to reach the target is less than a third of the total time, the planner enters a relaxed mode and will return a sub-optimal path, prioritizing reaching the target over minimizing cost. This helps ensure a path is found even when time is limited, at the cost of optimality.",
           },
           {
             type: "code",
@@ -189,24 +194,24 @@ bool is_goal(Node& currNode, int x_size, int y_size, int curr_time,
   }
   return false;
 }`,
-            subtitle: "Check If Goal Reached",
+            subtitle: "C++ Implementation to Check If Goal Reached",
           }
-        
       ],
-      navRef: "Algorithm Overview",
     },
     {
-      title: "Heuristic",
+      title: "Heuristic Implementation with Backward A*",
+      navName: "Heuristic",
+      navRef: "Heuristic",
       content: [
         {
           type: "text",
           content:
-            "To create an admissible and accurate heuristic for the 3D Multi-Goal A* planner, the Backward A* algorithm was employed. The heuristic represents the cost-to-goal from any state:",
+            "To develop an admissible and accurate heuristic for our 3D Multi-Goal A* planner, we used the Backward A* algorithm. The heuristic values were precomputed, and represent the cost-to-goal from any given state. The implementation of Backward A* involves exploring the space backwards from a series of imaginary goals.",
         },
         {
           type: "text",
           content:
-            "Backward A* precomputes the heuristic values for all grid cells, storing them in a 1D array for efficient access. This heuristic ensures both optimality and computational efficiency.",
+            "Backward A* computes and stores heuristic values for all traversable cells in a 1D array for efficient access, ensuring both optimality and computational efficiency during the path planning.",
         },
         {
             type: "code",
@@ -285,59 +290,62 @@ void heuristic(int* map, int x_size, int y_size, int collision_thresh,
     }
   }
 }`,
-            subtitle: "Backward A* Heuristic",
+            subtitle: "C++ Implementation of the Backward A* Heuristic",
         }
       ],
-      navRef: "Heuristic",
     },
     {
-      title: "Data Structures",
-      content: [
-        {
-          type: "text",
-          content:
-            "A custom node structure was created with attributes including , , and , which represent the coordinates and time of the node. The structure also includes , the cost from the start to the current node, , the heuristic cost from the current node to the goal, and , the total cost. Additionally, a boolean flag, is_imaginary, was introduced to represent goals during heuristic computation with Backward A*.",
-        },
-        {
-          type: "text",
-          content:
-            "The node structure includes a comparison operator to resolve ties based on -value, -value, and -value, in that order. A hash function based on the state ensures unique identification of nodes.",
-        },
-        {
-          type: "text",
-          content:
-            "Several other data structures were used to improve efficiency. The heuristic values were stored in a 1D vector accessed via a GETMAPINDEX function to save memory. An unordered map was used as the visited set, providing access to check if a node was visited. Similarly, the g-score values were stored in a 1D vector accessed through the GETMAPINDEX function. A parent map was used to track the parent of each node for path reconstruction, implemented as an unordered map for access. Finally, after a path was computed, it was placed into a global queue, allowing the robot to efficiently retrieve its next move at each iteration of the planner.",
-        },
-      ],
+      title: "Data Structures and Memory Management",
+      navName: "Problem Statement",
       navRef: "Problem Statement",
-    },
-    {
-      title: "Implementation Challenges",
       content: [
         {
           type: "text",
           content:
-            "For large grids, the planner initially attempts to compute the optimal path. This can result in higher costs when the robot waits at its current position while the path is computed. The relaxation mechanism mitigates this issue but introduces a trade-off between computational feasibility and path quality.",
+            "The project utilized a custom `Node` structure that included `x`, `y`, and `t` to represent the coordinates and time of the node, along with `g` (cost from start to the node), a heuristic estimate of cost-to-goal, and `f` (total cost). Also included was a flag, `is_imaginary` to represent goals during the heuristic process with Backward A*.",
         },
         {
           type: "text",
           content:
-            "Efficient memory management was also critical, particularly for handling large grids. Storing heuristic and g-score values in 1D arrays, rather than multi-dimensional matrices, significantly reduced memory overhead.",
+            "The `Node` structure also included a comparison operator to prioritize nodes based on f-value, then g-value, and finally the heuristic values.  A hash function was also developed based on the state to allow for efficient lookups in the unordered maps.",
+        },
+        {
+          type: "text",
+          content:
+            "To improve efficiency, the implementation used several specialized data structures. A 1D vector accessed by the `GETMAPINDEX` function was used to store heuristic values, which helped conserve memory. A similar strategy was used for storing g-score values. An `unordered_map` was used as the visited set to quickly check if a node was already explored. The parent map was also an unordered map that stored the parent of each node for path reconstruction. Finally, the path was placed in a global queue to allow the robot to efficiently retrieve its next move.",
         },
       ],
+        
+    },
+    {
+      title: "Implementation Challenges and Tradeoffs",
+      navName: "Implementation Challenges",
       navRef: "Implementation Challenges",
+      content: [
+        {
+          type: "text",
+          content:
+            "For large grid environments, the planner initially aims to compute the optimal path, and in some cases that can result in the robot waiting while the path is computed. This issue is mitigated by the relaxation mechanism, where the planner will prioritize getting to the goal over the shortest path in time critical scenarios, which introduces a tradeoff between computational feasibility and path quality.",
+        },
+        {
+          type: "text",
+          content:
+            "Memory management was another important aspect of the design. In particular, using 1D arrays for heuristic and g-score values significantly reduced memory use, especially for large grids, improving the algorithms practical usage in real world scenarios.",
+        },
+      ],
     },
     {
       title: "Conclusion",
+      navName: "Conclusion",
+      navRef: "Conclusion",
       content: [
         {
           type: "text",
           content:
-            "The planner successfully utilizes a variant of Multi-Goal A* to minimize the robot’s traversal cost while catching a moving target in an 8-connected grid. By incorporating Backward A* for heuristic computation and employing efficient data structures, the implementation achieves a balance between optimality, computational efficiency, and memory usage. Although challenges remain for large grids, the planner demonstrates robust performance within the given constraints.",
+            "The project successfully implemented a robust motion planner using a variant of Multi-Goal A* to minimize the robot’s traversal cost while capturing a moving target in a 2D grid. The planner incorporated Backward A* for heuristic computation along with efficient data structures. The implementation achieves an effective balance between optimality, computational efficiency, and memory usage, offering a practical solution for real-time target interception. Although challenges remain for scaling this to larger grids, the planner delivers reliable performance within the imposed constraints.",
         },
       ],
-      navRef: "Conclusion",
     },
   ],
-  tags: [],
+  tags: ["Robotics", "Motion Planning", "A*", "Pathfinding", "Algorithms", "C++"],
 };

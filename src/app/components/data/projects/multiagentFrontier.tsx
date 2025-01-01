@@ -1,6 +1,5 @@
 import { Project} from "@/app/components/project/interfaces";
 
-
 export const multiRobotFrontierExploration: Project = {
     title: "Multi-Robot Frontier Exploration",
     subtitle: "Fall 2023",
@@ -8,45 +7,44 @@ export const multiRobotFrontierExploration: Project = {
     tags: ["Robotics", "Multi-Agent Systems", "Path Planning", "A*", "Python"],
     section: [
         {
-            title: "Overview",
+            title: "Project Overview",
             navName: "Overview",
             navRef: "overview",
             content: [
                 {
                     type: "text",
                     content:
-                        "This project explores the use of a multi-robot system to efficiently explore an unknown environment. By leveraging a frontier-based exploration strategy, multiple robots work together to map the environment more quickly than a single robot could. This approach is useful for a variety of applications, such as search and rescue, environmental monitoring and autonomous mapping.",
+                        "This project focused on developing a multi-robot system for efficiently exploring an unknown environment. The project leverages a frontier-based exploration strategy, which allows multiple robots to work collaboratively to map an environment more quickly than a single robot. This multi-robot system is applicable in various fields, including search and rescue operations, environmental monitoring, and autonomous mapping.",
                 },
                 {
                     type: "image",
-                    content: "/media/images/frontier_inprogress.png", // Placeholder image
+                    content: "/media/images/frontier_inprogress.png",
                     altContent: "A grid map being explored by multiple robots.",
-                    subtitle: "Example of a map being explored."
+                    subtitle: "A visual example of a map under exploration."
                 },
-                
             ],
         },
         {
-            title: "Problem Statement",
+            title: "Problem Statement and Objectives",
             navName: "Problem Statement",
             navRef: "problem-statement",
             content: [
                 {
                     type: "text",
                     content:
-                        "The challenge is to efficiently explore an unknown 2D environment using multiple robots. Each robot has a limited sensing range and must cooperate with other robots to map the entire area. The exploration must be optimized to reduce time and ensure complete coverage, all while avoiding collisions with other robots.",
+                        "The core challenge of this project was to design a system that would enable multiple robots to efficiently explore an unknown 2D environment. Each robot is equipped with a limited sensing range and must collaborate to completely map the area, reducing exploration time while avoiding collisions with other robots. The primary objective is to achieve complete environmental coverage while maintaining an efficient and collision-free operation.",
                 },
             ],
         },
         {
-            title: "Approach",
+            title: "Exploration Approach and Design",
             navName: "Approach",
             navRef: "approach",
             content: [
                 {
                     type: "text",
                     content:
-                    "Our approach uses a decentralized greedy frontier-based algorithm. Each robot independently identifies frontier cells, which are the boundaries between explored and unexplored areas. Then they plan their path towards the closest frontier using a modified A* algorithm. To avoid collisions, robots consider each other's planned paths, and temporarily increase the cost of cells near frontiers currently being explored by another robot.",
+                        "Our approach utilizes a decentralized, greedy frontier-based algorithm. Each robot independently identifies frontier cells (the boundaries between explored and unexplored areas), and then plans its path toward the nearest frontier using a modified A* search algorithm. This decentralized system promotes robustness and scalability. To prevent collisions, the robots take into account the planned paths of others, temporarily increasing the cost of areas near frontiers that are currently being explored.",
                 },
                 {
                     type: "text",
@@ -56,71 +54,71 @@ export const multiRobotFrontierExploration: Project = {
                 {
                     type: "text",
                     content:
-                        "Frontier Detection involves identifying the boundary between explored and unexplored areas. Multi-Goal A* is the path planning algorithm that navigates robots towards a frontier, while considering other robot's paths. Decentralized Control means that each robot operates independently, coordinating through local awareness and cost adjustments. Dynamic Obstacle Avoidance ensures that robots can react and move around dynamic obstacles."
+                       "Frontier Detection: The robot identifies the boundaries between explored free space and unknown space, focusing exploration on the most informative regions. Multi-Goal A* Path Planning: A modified A* algorithm is used to navigate robots towards frontier cells while also avoiding other robots.  Decentralized Control: Each robot operates independently, coordinating its actions based on local awareness and the dynamic adjustment of cost maps. Dynamic Obstacle Avoidance: The system incorporates dynamic obstacle avoidance where robots can detect a path collision with a dynamic obstacle, replan, and then move to a safe position.",
                 },
             ],
         },
          {
-            title: "Algorithm Details",
+            title: "Detailed Algorithm Implementation",
             navName: "Algorithm Details",
             navRef: "algorithm-details",
             content: [
                 {
                     type: "text",
                     content:
-                        "Our algorithm is broken down into several key steps. First, the robots update their local map using their sensors. Then, they identify the frontier cells, which are the boundaries between explored free space and unknown space. Finally, they use a multi-goal A* algorithm to navigate to the closest frontier.",
+                       "The core algorithm consists of several key steps. Each robot uses its sensors to update a local map of the environment. Then, they identify frontier cells based on the updated map, and finally, a multi-goal A* algorithm is used to navigate the robots toward the nearest frontier.",
                 },
                 {
                      type: "text",
                     content:
-                    "The Multi-Goal A* Algorithm is a modified version of A* that considers multiple goals, which are the frontier cells. It also takes into account other robots by increasing the cost of their path. This is done using a cost map which increases the cost of cells near a robot's planned path, helping robots avoid following each other.",
+                    "The Multi-Goal A* Algorithm, a modification of the standard A* algorithm, allows robots to navigate to any number of frontier cells instead of just a single goal. It also allows the robot to consider the paths of other robots by increasing the cost of nearby cells. These cost maps help to prevent robots from choosing the same path and colliding with each other.",
                 },
                 {
                     type: "text",
                      content:
-                    "Dynamic Obstacle Handling involves the robots detecting and avoiding dynamic obstacles during planning. If a robot detects that a dynamic obstacle is on its planned path, it will replan and find a new path around the obstacle.",
+                    "Our dynamic obstacle handling system allows robots to detect a collision with a dynamic object, which forces a robot to replan its path, moving it to a safe region.",
                 },
                  {
                     type: "text",
                      content:
-                    "Robot Coordination is achieved by having each robot controlled decentrally, but they are able to coordinate by avoiding each other. They also use cost maps to increase the cost of an area another robot is already moving towards. This allows the robots to avoid colliding and to spread out as much as possible."
+                    "Robot Coordination was achieved through a decentralized control system where each robot is operating independently, while avoiding each other through a cost map. This cost map helps reduce the amount of collisions that occur while also allowing them to spread out.",
                 },
             ]
         },
          {
-            title: "Key Concepts",
+            title: "Core Concepts",
             navName: "Key Concepts",
             navRef: "key-concepts",
             content: [
                 {
                     type: "text",
                     content:
-                        "Here we will elaborate on some of the core ideas behind the project.",
+                        "Here are some of the core principles and ideas that drove this project:",
                 },
                  {
                      type: "text",
                     content:
-                    "Frontier-Based Exploration uses frontiers as the edges between the known and unknown. By directing robots towards these regions we can most efficiently explore.",
+                    "Frontier-Based Exploration: This strategy directs robots to the boundaries between known and unknown areas, enabling efficient exploration.",
                 },
                 {
                      type: "text",
                     content:
-                    "Our algorithm uses a Greedy Approach by sending robots to the nearest frontier. While this is not always the optimal approach it is simple and performs well.",
+                    "Greedy Approach: Robots choose the nearest frontier cell as their next goal. This simplifies decision-making and shows to work effectively in practice.",
                 },
                {
                     type: "text",
                      content:
-                    "A Decentralized Approach is used where each robot calculates its path independently. This simplifies implementation and allows robots to work even if there is a communication failure.",
+                    "Decentralized Approach: Each robot calculates its path independently. This simplifies implementation and allows robots to work even if there is a communication failure.",
                 },
                  {
                     type: "text",
                      content:
-                    "Cost Maps are used to allow the robots to avoid each other. By increasing the cost of regions where a robot is, it becomes less likely other robots will try to move in that direction.",
+                    "Cost Maps: Robots use cost maps to avoid each other, with increased costs in regions occupied or targeted by other robots to avoid collisions.",
                 },
                  {
                     type: "text",
                      content:
-                     "The A* algorithm was modified to allow for multiple goals, these goals are the frontier cells that are being explored. This avoids having to replan each time a robot reaches a single frontier. "
+                     "Multi-Goal A*: The A* algorithm was modified to allow for multiple goals, these goals are the frontier cells that are being explored. This avoids having to replan each time a robot reaches a single frontier. "
                 },
             ]
         },
@@ -132,7 +130,7 @@ export const multiRobotFrontierExploration: Project = {
                {
                     type: "text",
                     content:
-                        "The core logic of the project is implemented in Python using several standard libraries. Below are some key snippets from the project.",
+                        "The core logic of the project was implemented using Python and several standard libraries. Below are some key snippets from the project.",
                 },
                 {
                     type: "code",
@@ -484,9 +482,8 @@ def main():
     print("Environment explored")
                 
 main()
-
                     `,
-                    subtitle: "A snippet of the Python code highlighting key functionality.",
+                    subtitle: "A Python implementation of multi-robot exploration.",
                 }
             ],
         },
@@ -502,29 +499,29 @@ main()
                 },
                 {
                     type: "text",
-                    content: "Here is a summary of the results:",
+                    content: "The results are summarized below:",
                 },
                 {
                     type: "text",
                     content:
-                    "As expected, the exploration time increases with the size of the map. Our results showed a somewhat linear relationship between the number of cells and the time to complete the exploration, with larger maps taking more time but generally scaling well with respect to cell size.",
+                        "As expected, the exploration time increases with the size of the map. Our results showed a somewhat linear relationship between the number of cells and the time to complete the exploration, with larger maps taking more time but generally scaling well with respect to cell size.",
                 },
-                {
+                 {
                     type: "image",
                     content: "/media/images/frontier_multmap.png",
                     altContent: "Small, medium and large maps used for testing",
-                    subtitle: "Maps of varying sizes were used for testing."
+                    subtitle: "Maps of varying sizes were used for testing.",
                 },
                  {
                     type: "text",
                     content:
-                    "Increasing the number of robots significantly reduces exploration time, but with diminishing returns. Initially, each additional robot provides a substantial speedup, but as the number of robots increases, the benefits decrease, due to interference and multiple robots exploring the same area.",
+                        "Increasing the number of robots significantly reduces exploration time, but with diminishing returns. Initially, each additional robot provides a substantial speedup, but as the number of robots increases, the benefits decrease, due to interference and multiple robots exploring the same area.",
                 },
-                {
+                 {
                      type: "image",
                     content: "/media/images/frontier_robotsgraph.png",
                     altContent: "A plot showing the relationship between run time and the number of robots",
-                    subtitle: "Run time decreases as number of robots increases."
+                    subtitle: "Run time decreases as number of robots increases.",
                 },
                 {
                     type: "text",
@@ -545,17 +542,17 @@ main()
                  {
                     type: "text",
                     content:
-                    "Testing the algorithm in more complex environments. More complex environments could include more dynamic obstacles or more complex map topologies.",
+                        "Testing the algorithm in more complex environments. More complex environments could include more dynamic obstacles or more complex map topologies.",
                 },
                 {
                      type: "text",
                     content:
-                    "Testing with different sensing ranges. The current implementation only allows for a sensor range of 1. Expanding the sensor range could allow for faster exploration.",
+                        "Testing with different sensing ranges. The current implementation only allows for a sensor range of 1. Expanding the sensor range could allow for faster exploration.",
                 },
                {
                     type: "text",
                      content:
-                    "Exploring different heuristic functions for the A* algorithm. A better heuristic might allow for more efficient exploration.",
+                        "Exploring different heuristic functions for the A* algorithm. A better heuristic might allow for more efficient exploration.",
                 },
                   {
                     type: "text",
