@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { CodeContentBlock, ContentBlock, ImageContentBlock, Section } from "@/app/components/project/interfaces";
+import { CodeContentBlock, ContentBlock, ImageContentBlock, Section, VideoContentBlock } from "@/app/components/project/interfaces";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -14,12 +14,20 @@ function ProjectContentCard(props: { contentBlock: ContentBlock }) {
         <div className="flex justify-center">
           <div className="flex flex-col">
             <Image className="mt-5" src={content} alt={altContent ?? ""} width={500} height={500} />
-            <p className="mt-3 mb-0 text-xs text-center">{imageSubtitle ?? "Test Subtitle"}</p>
+            <p className="mt-3 mb-0 text-xs text-center">{imageSubtitle ?? ""}</p>
           </div>
         </div>
       );
     case "video":
-      return <video src={content} controls />;
+      const { subtitle: videoSubtitle } = props.contentBlock as VideoContentBlock;
+      return (
+        <div className="flex justify-center">
+          <div className="flex flex-col">
+        <video className="mt-5" src={content} controls />
+        <p className="mt-3 mb-0 text-xs text-center">{videoSubtitle ?? ""}</p>
+          </div>
+        </div>
+      );
       case "code":
         const { codeLang, subtitle: codeSubtitle } = props.contentBlock as CodeContentBlock;
         return (

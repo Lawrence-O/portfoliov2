@@ -3,7 +3,7 @@ import { Project } from "@/app/components/project/interfaces";
 export const optimalControlHW2: Project = {
     title: "Optimal Control of Linear Systems: LQR, TVLQR, and MPC",
     subtitle: "Coursework - Spring 2024",
-    media: "/media/images/optimalControlHW.png",
+    media: "/media/videos/mpc_rendezvous.mp4",
     tags: ["Optimal Control", "LQR", "Convex Optimization", "MPC", "Julia", "State Space Control"],
     section: [
         {
@@ -66,6 +66,41 @@ end
                     subtitle: "Julia code for discretizing the double integrator system."
                   },
                   {
+                    type: "code",
+                     codeLang: "julia",
+                     content: `
+"""
+ Solves a finite-horizon LQR problem using convex optimization.
+"""
+function convex_trajopt(A:: Matrix, B:: Matrix, Q::Matrix, R::Matrix, Qf:: Matrix, N:: Int64, x_ic:: Vector; verbose = false)::Tuple{Vector{Vector{Float64}},Vector{Vector{Float64}}}
+ nx, nu = size(B)
+ X = cvx.Variable(nx, N)
+ U = cvx.Variable(nu, N-1)
+ cost = 0
+ for k = 1:(N-1)
+     x_k = X[:,k]
+     u_k = U[:,k]
+     cost += 0.5*cvx.quadform(x_k,Q)
+     cost += 0.5*cvx.quadform(u_k, R)
+ end
+ cost += 0.5*cvx.quadform(X[:,N],Qf)
+ prob = cvx.minimize(cost)
+ prob.constraints += X[:,1] == x_ic
+ for k = 1: (N-1)
+     x_k = X[:,k]
+         u_k = U[:,k]
+     prob.constraints += A*x_k + B*u_k == X[:, k+1]
+ end
+ cvx.solve!(prob, ECOS.Optimizer; silent_solver = !verbose)
+ X = vec_from_mat(X.value)
+ U = vec_from_mat(U.value)
+ return X,U
+end
+                      `
+                     ,
+                     subtitle: "Implementation of the Convex Trajectory Optimization algorithm."
+                },
+                  {
                      type: "image",
                     content: "/media/images/finite_lqr_trajectory.png",
                      altContent: "Finite Horizon LQR Trajectory",
@@ -83,41 +118,7 @@ end
                      content:
                          "Bellman’s Principle of Optimality was explored by solving the Finite-Horizon LQR problem again, but with updated initial conditions. The results of this test showed that subsections of the resulting optimal trajectories are also optimal, which validated Bellman's Principle of Optimality. "
                    },
-                   {
-                       type: "code",
-                        codeLang: "julia",
-                        content: `
-"""
-    Solves a finite-horizon LQR problem using convex optimization.
-"""
-function convex_trajopt(A:: Matrix, B:: Matrix, Q::Matrix, R::Matrix, Qf:: Matrix, N:: Int64, x_ic:: Vector; verbose = false)::Tuple{Vector{Vector{Float64}},Vector{Vector{Float64}}}
-    nx, nu = size(B)
-    X = cvx.Variable(nx, N)
-    U = cvx.Variable(nu, N-1)
-    cost = 0
-    for k = 1:(N-1)
-        x_k = X[:,k]
-        u_k = U[:,k]
-        cost += 0.5*cvx.quadform(x_k,Q)
-        cost += 0.5*cvx.quadform(u_k, R)
-    end
-    cost += 0.5*cvx.quadform(X[:,N],Qf)
-    prob = cvx.minimize(cost)
-    prob.constraints += X[:,1] == x_ic
-    for k = 1: (N-1)
-        x_k = X[:,k]
-            u_k = U[:,k]
-        prob.constraints += A*x_k + B*u_k == X[:, k+1]
-    end
-    cvx.solve!(prob, ECOS.Optimizer; silent_solver = !verbose)
-    X = vec_from_mat(X.value)
-    U = vec_from_mat(U.value)
-    return X,U
-end
-                         `
-                        ,
-                        subtitle: "Implementation of the Convex Trajectory Optimization algorithm."
-                   },
+                   
                  {
                     type: "image",
                      content: "/media/images/bellman_trajectory.png",
@@ -146,11 +147,11 @@ Solves the infinite-horizon LQR problem using Riccati recursion.
 function ihlqr (A:: Matrix, B:: Matrix, Q::Matrix, R::Matrix, tol = 1e-5, max_iters=1000)
         P_prev = deepcopy (Q)
         for i = 1:max_iters
-        K = (R + B'*P_prev*B) \\ B' *P_prev*A
-        P = Q + A'*P_prev* (A - B*K)
+            K = (R + B'*P_prev*B) \\ B' *P_prev*A
+            P = Q + A'*P_prev* (A - B*K)
             if norm(P - P_prev) <= tol
-            return P, K
-        end
+                return P, K
+            end
         P_prev = P
     end
         error("ihlqr did not converge")
@@ -189,26 +190,36 @@ function ihlqr (A:: Matrix, B:: Matrix, Q::Matrix, R::Matrix, tol = 1e-5, max_it
                 {
                      type: "code",
                     codeLang: "julia",
-                    content: `
+                    content: `# Define the cost matrices
+Q = diagm([1,1,.05,.1])
+Qf = 10*Q
+R = 0.05*diagm(ones(nu))
+
 #Time Varying Ricatti Recursion to Calculate Gains
 for k = N-1:-1:1
-        # Linearize dynamics about reference state
-        A = FD.jacobian(_x -> rk4 (params_est, _x, Ubar [k], dt), Xbar[k])
-        B = FD.jacobian (_u -> rk4 (params_est, Xbar[k], _u, dt), Ubar[k])
-        # Compute the time varying gain matrix
-        K[k] = (R + B'*P[k+1]*B) \\ B'*P[k+1]*A
-        # Update the cost to go matrix
-        P[k] = Q + A'*P[k+1]*(A - B*K[k])
-    end
+    # Linearize dynamics about reference state
+    A = FD.jacobian(_x -> rk4 (params_est, _x, Ubar [k], dt), Xbar[k])
+    B = FD.jacobian (_u -> rk4 (params_est, Xbar[k], _u, dt), Ubar[k])
+    # Compute the time varying gain matrix
+    K[k] = (R + B'*P[k+1]*B) \\ B'*P[k+1]*A
+    # Update the cost to go matrix
+    P[k] = Q + A'*P[k+1]*(A - B*K[k])
+end
+
+# Simulate the system with the time varying gains
+for i = 1:N-1
+    u = Ubar[i] -K[i]*(X[i] - Xbar[i])
+    X[i+1] = rk4(params_real,X[i],u,dt)
+end
                         `,
                     subtitle: "Julia implementation of the Time-Varying LQR algorithm."
                 },
-                  {
+                {
                     type: "image",
-                    content: "/media/images/tvlqr_cartpole.png",
-                     altContent: "Trajectory Tracking with TVLQR",
-                     subtitle: "The cartpole's trajectory while tracking a reference with Time-Varying LQR."
-                    },
+                    content: "/media/images/tvlqr_trajectory.png",
+                    altContent: "Time-Varying LQR Trajectory",
+                    subtitle: "Trajectory of the cartpole system using Time-Varying LQR."
+                }
              ]
         },
         {
@@ -307,8 +318,8 @@ end
                         subtitle: "Julia implementation of convex trajectory optimization."
                       },
                      {
-                     type: "image",
-                    content: "/media/images/convex_rendezvous.png",
+                     type: "video",
+                    content: "/media/videos/convex_rendezvous.mp4",
                     altContent: "Rendezvous using convex trajectory optimization",
                      subtitle: "A trajectory of a spacecraft undergoing rendezvous using convex trajectory optimization."
                    },
@@ -364,8 +375,8 @@ end
                       subtitle: "Julia implementation of convex MPC."
                      },
                      {
-                         type: "image",
-                       content: "/media/images/mpc_rendezvous.png",
+                        type: "video",
+                       content: "/media/videos/mpc_rendezvous.mp4",
                        altContent: "Rendezvous using Convex MPC",
                       subtitle: "Trajectory of a spacecraft using convex MPC for rendezvous and docking.",
                       },
