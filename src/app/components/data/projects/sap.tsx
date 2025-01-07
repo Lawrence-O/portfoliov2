@@ -3,7 +3,7 @@ import { Project} from "@/app/components/project/interfaces";
 export const safeguardAgainstPests: Project = {
     title: "Safeguard Against Pests (SAP)",
     subtitle: "Electromechanical Systems Design Project - Fall 2023",
-    media: "/media/images/safeguardAgainstPests.png",
+    media: "/media/videos/sap_front_view.mp4",
     tags: ["Robotics", "Pest Control", "Computer Vision", "Embedded Systems", "CAD", "Machine Learning"],
     section: [
         {
@@ -34,12 +34,6 @@ export const safeguardAgainstPests: Project = {
                     content:
                         "Our project began with a clear understanding of the need for an effective and environmentally conscious pest control solution. Existing market options were found to be limited, with many still in the prototype stage. Competitors included CO2-emitting and suction-based mosquito control robots, large-scale agricultural pest control robots, and laser deterrents with constrained computational power. SAP is designed to stand out by using targeted pesticide application, advanced computer vision, and fully autonomous operation, making it ideal for home garden use. Our survey data confirmed that current methods lack accuracy and range, which our design addresses, making it a competitive alternative to conventional methods."
                 },
-                 {
-                    type: "image",
-                    content: "/media/images/market_competitors.png",
-                    altContent: "Competitor products",
-                    subtitle: "Analysis of the current market competitors."
-                 },
                   {
                     type: "text",
                      content: "Key stakeholders for this project include homeowners, gardeners, local communities, and environmental agencies. The team conducted surveys to identify customer needs, including the need for autonomy, environmental friendliness, accuracy, and sufficient range. These needs were then classified as either basic or performance needs to prioritize our design goals."
@@ -62,7 +56,7 @@ export const safeguardAgainstPests: Project = {
                 },
                 {
                    type: "image",
-                   content: "/media/images/functional_decomposition.png",
+                   content: "/media/images/sap_functional_decomposition.png",
                    altContent: "Functional Decomposition Diagram",
                    subtitle: "Diagram illustrating the functional decomposition of the system."
                 },
@@ -71,13 +65,6 @@ export const safeguardAgainstPests: Project = {
                     content:
                          "For target identification, the team explored several methods, including Convolutional Neural Networks (CNN), a Bag of Words approach with K-Nearest Neighbors, template matching, and color matching. A CNN was initially chosen for its superior performance and robustness to environmental variables, but this was later replaced by a more efficient YOLO model. For tracking, we considered a rotating cylinder with tilt control, and a rotating base with a linear actuator. A combination of both was selected, using a rotating platform combined with pitch controls. The shooting mechanisms explored included an electric pump and a pressurized air system, with the electric pump being selected for its consistent shooting power and ease of implementation."
                 },
-                {
-                   type: "image",
-                   content: "/media/images/concept_selection.png",
-                   altContent: "Concept Selection Table",
-                   subtitle: "Table showing the final concept selection."
-                },
-
             ]
         },
         {
@@ -91,42 +78,16 @@ export const safeguardAgainstPests: Project = {
                         "The storage subsystem uses a force sensor to measure liquid levels, with an equation fitted to observed values. Finite Element Analysis (FEA) was conducted on the weighing platform and main weighing plate to ensure structural integrity, and confirmed that the design can withstand the expected loads without excessive deformation. A shooting analysis was performed on different nozzle configurations, with a sprayer nozzle being selected for the final design. This configuration provided an average flow rate of 40mL per second, with a burst volume of 48mL."
                 },
                 {
-                   type: "image",
-                   content: "/media/images/shooting_analysis.png",
-                   altContent: "Shooting analysis of different nozzles",
-                   subtitle: "Analysis of different nozzles for optimal performance."
-                },
-                {
                     type: "text",
                     content:
                         "The target identification subsystem initially used a CNN, but the team switched to a YOLO model to improve execution time. While the CNN model had a sub 90 millisecond execution time, its implementation using a selective search algorithm had an unacceptable execution time of 15 seconds. The YOLO model provided a better execution time of 500 milliseconds and also proved to be spatially more accurate. The tracking subsystem analysis involved calculating the minimum torque required for the stepper motors and the electrical power requirements. A factor of safety of 6 was achieved with a 60 Ncm torque. The power requirements were determined to be 12V and 1.5A, guided by IEEE 1100-2005 standards to ensure proper power and grounding."
                 },
                  {
                     type: "image",
-                   content: "/media/images/yolo_output.png",
+                   content: "/media/images/sap_yolo_output.png",
                    altContent: "YOLO model output",
                    subtitle: "Output from the YOLO model."
                  },
-                {
-                   type: "code",
-                   codeLang: "java",
-                   content: `
-                   /**
-                    * Calculates the required torque for the stepper motor.
-                    * @param weight The weight of the components being moved in kilograms.
-                    * @param distance The distance from the center of rotation in meters.
-                    * @return The torque required in Newton-centimeters (Ncm).
-                    */
-                    public double calculateTorque(double weight, double distance) {
-                        double gravity = 9.81; // Acceleration due to gravity in m/s^2
-                        double moment = weight * gravity * distance; // Newton-meters
-                        double torque = moment * 100; // Convert to Ncm
-                        return torque;
-                    }
-                   `
-                  ,
-                  subtitle: "Code used for calculating the required torque for the stepper motor."
-                },
                  {
                     type: "text",
                     content:
@@ -146,7 +107,7 @@ export const safeguardAgainstPests: Project = {
                 },
                   {
                     type: "image",
-                    content: "/media/images/dovetail_joint.png",
+                    content: "/media/images/sap_dovetail_joint.png",
                     altContent: "Dovetail joint method",
                      subtitle: "Dovetail joint method used in the construction of the prototype."
                  },
@@ -167,24 +128,12 @@ export const safeguardAgainstPests: Project = {
                     content:
                         "Our design took into account environmental, public safety, and ethical considerations. The robot was programmed to use a penalty-based approach, reducing scores for targets near humans or electronics, to avoid unintended actions. The team also tested to determine the minimum amount of pesticide needed. The design was built with an understanding of the negative impact lantern-flies have on the community and sought to address this problem."
                 },
-                 {
-                    type: "image",
-                    content: "/media/images/target_demo.png",
-                    altContent: "Target scoring demo",
-                     subtitle: "Demonstration of how the target scoring system works."
-                 },
                   {
                     type: "image",
-                    content: "/media/images/penalty_demo.png",
+                    content: "/media/images/sap_penalty_demo.png",
                     altContent: "Penalty scoring demo",
                      subtitle: "Demonstration of the penalty system for unwanted targets."
                  },
-                  {
-                     type: "video",
-                     content: "/media/videos/sap_demo.mp4",
-                     altContent: "Video of the SAP robot working",
-                     subtitle: "Video of the SAP prototype in operation."
-                  },
                 {
                    type: "text",
                    content: "The final prototype was tested sequentially for its weight sensing, tracking, and shooting capabilities. Initial tests confirmed that the weight sensing was functional simultaneously with the camera. Tracking tests, conducted with different target locations and multiple targets, showed that the robot was able to mostly track its targets, though with some horizontal offsets. The right side of the camera showed reduced accuracy, resulting in only a 20% success rate compared to 60% overall. Shooting tests, performed after successful target tracking, required a manual offset to achieve consistent hits. The average hit rate during testing was 4 out of 5 targets."

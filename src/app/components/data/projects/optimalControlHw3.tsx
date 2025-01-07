@@ -16,12 +16,6 @@ export const optimalControlHW3: Project = {
           content:
             "This project explores various optimal motion planning and control algorithms, focusing on Direct Collocation (DIRCOL) and iterative Linear Quadratic Regulator (iLQR) techniques. These algorithms are applied to solve trajectory optimization problems for systems such as a cart-pole and a quadrotor. The project also includes implementations of Time-Varying LQR (TVLQR) for trajectory tracking in the presence of model mismatch. All implementations were done using the Julia programming language.",
         },
-        {
-           type: "image",
-           content: "/media/images/optimalControlIntro.png",
-           altContent: "Diagram illustrating the optimal control concept",
-           subtitle: "General Optimal Control Scheme",
-        }
       ],
     },
     {
@@ -36,131 +30,172 @@ export const optimalControlHW3: Project = {
         },
         {
           type: "code",
-          content: `
-          /**
-           * Solves a linear program using IPOPT.
-           *
-           * This function takes a cost function, equality and inequality constraint functions,
-           * lower and upper bounds for the variable and the constraints, an initial guess,
-           * problem-specific parameters, the differentiation type, and verbosity as inputs.
-           * It minimizes the cost function subject to the given constraints, using the IPOPT solver.
-           *
-           * @param cost Function that calculates the cost. It takes params and x as arguments and returns a real value.
-           * @param equality_constraint Function that calculates the equality constraints. Takes params and x and returns a vector.
-           * @param inequality_constraint Function that calculates the inequality constraints. Takes params and x and returns a vector.
-           * @param x_1 Lower bound of x. It is a vector.
-           * @param x_u Upper bound of x. It is a vector.
-           * @param c_l Lower bound for inequality constraint. It is a vector.
-           * @param c_u Upper bound for inequality constraint. It is a vector.
-           * @param x0 Initial guess for x. It is a vector.
-           * @param params Problem parameters. This is a NamedTuple.
-           * @param diff_type Symbol that specifies differentiation type, can be :auto or :finite.
-           * @param verbose Boolean for verbosity of IPOPT. Default is true.
-           * @param tol Optional argument for optimality tolerance. Default is 1e-6.
-           * @param c_tol Optional argument for constraint violation tolerance. Default is 1e-6.
-           * @param max_iters Optional argument for maximum number of iterations. Default is 10_000.
-           *
-           * @return solution x as a Vector
-          */
-          function fmincon(
-              cost,
-              equality_constraint,
-              inequality_constraint,
-              x_1,
-              x_u,
-              c_l,
-              c_u,
-              x0,
-              params,
-              diff_type;
-              tol = 1e-6,
-              c_tol = 1e-6,
-              max_iters = 10_000,
-              verbose = true
-          )
-              # checking dimensions of everything
-              @assert length(x_1) == length(x_u)
-              @assert length(x0) == length(x_1)
-              @assert length(c_l) == length(c_u)
+          content: `/**
+ * Calculates the cost for the cartpole system.
+ *
+ * This function takes the system parameters, and the state and control
+ * trajectory (Z) as inputs. It computes the LQR cost, that is, the sum of
+ * the stage cost over all timesteps, including a terminal cost.
+ *
+ * @param params System parameters. NamedTuple containing indices, sizes,
+ *               cost matrices, and goal state.
+ * @param Z Combined state and control trajectory vector.
+ * @return Total cost for the given trajectory.
+ */
+function cartpole_cost(params::NamedTuple, Z::Vector)::Real
+    # Unpack parameters for easier access
+    idx, N, xg = params.idx, params.N, params.xg
+    Q, R, Qf = params.Q, params.R, params.Qf
 
-              # setting up autodiff
-              if diff_type == :auto
-                  diff_backend = ForwardDiff
-              elseif diff_type == :finite
-                  diff_backend = FiniteDiff
-              else
-                  error("must be either :auto or :finite")
-              end
+    # Initialize the cost
+    J = 0
 
-              # define functions that IPOPT needs, using autodiff
-              function obj(x)
-                  return cost(params, x)
-              end
+    # Loop through all time steps except for the last one
+    for i = 1:(N-1)
+        # Get current state and control from Z vector
+        xi = Z[idx.x[i]]
+        ui = Z[idx.u[i]]
 
-              function obj_grad(x, grad)
-                  grad[:] = diff_backend.gradient(obj, x)
-              end
+        # Calculate the stage cost
+        J += 0.5 * (xi - xg)' * Q * (xi - xg) # state cost
+        J += 0.5 * ui' * R * ui # control cost
 
-              function constraints(x, con)
-                  con[1:length(equality_constraint(params, x))] = equality_constraint(params, x)
-                  con[(length(equality_constraint(params, x))+1):end] = inequality_constraint(params, x)
-              end
+    end
 
-              function constraints_jac(x, jac)
-                  jac[:, 1:length(equality_constraint(params, x))] = diff_backend.jacobian(x -> equality_constraint(params,x), x)
-                  jac[:, (length(equality_constraint(params, x))+1):end] = diff_backend.jacobian(x -> inequality_constraint(params,x), x)
-              end
+    # Add the terminal cost
+    J += 0.5 * (Z[idx.x[N]] - xg)' * Qf * (Z[idx.x[N]] - xg)
+    return J # Return the total cost
+end
 
-              # get dimension of things
-              num_eq_con = length(equality_constraint(params, x0))
-              num_ineq_con = length(inequality_constraint(params, x0))
-              num_con = num_eq_con + num_ineq_con
-              num_vars = length(x0)
+/**
+ * Computes the dynamic constraints for the cartpole system.
+ *
+ * This function calculates the constraint violation by implementing
+ * the Hermite-Simpson integration method.
+ *
+ * @param params System parameters including time step and system indices.
+ * @param Z Combined state and control trajectory vector.
+ * @return A vector of dynamic constraint violations for all time steps.
+ */
+function cartpole_dynamics_constraints(params::NamedTuple,
+  Z::Vector)::Vector
+  # Unpack useful parameters for easy use
+    idx, N, dt = params.idx, params.N, params.dt
 
-              # creating the ipopt problem
-              prob = MOI.Problem(;
-                  sense = MOI.MIN_SENSE,
-                  objective = MOI.ObjectiveFunction(obj),
-                  gradient = MOI.ObjectiveGradient(obj_grad),
-                  constraints = MOI.Constraints(constraints, num_con),
-                  jacobian = MOI.ConstraintsJacobian(constraints_jac),
-                  variable_bounds = MOI.VariableBounds(x_1, x_u),
-                  constraint_bounds = MOI.ConstraintBounds([zeros(num_eq_con); c_l], [zeros(num_eq_con); c_u]),
-                  initial_guess = MOI.InitialGuess(x0),
-              )
+    # Initialize a vector to store constraint violations
+    c = zeros(eltype(Z), idx.nc)
 
-              # solving
-              @info "---all dimensions good---"
-              @info "--diff type set to :$(diff_type) ($(typeof(diff_backend).name))----"
-               @info "-testing objective gradient--"
-              if diff_type == :auto
-                  @test_nowarn diff_backend.gradient(obj, x0)
-              end
-              @info "--testing constraint Jacobian---"
-               if diff_type == :auto
-                  @test_nowarn  diff_backend.jacobian(x->constraints(x,zeros(num_con)), x0)
-               end
-              @info "-successfully compiled both derivatives-----"
-              optimizer = Ipopt.Optimizer(
-                  ;
-                  print_level = verbose ? 5 : 0,
-                  tol = tol,
-                  acceptable_tol = tol,
-                  max_iter = max_iters,
-                  acceptable_iter = max_iters,
-                  constr_viol_tol = c_tol,
-                  acceptable_constr_viol_tol = c_tol
-              )
+    # Loop through all time steps except for the last one
+    for i = 1:(N-1)
+      # Extract the state and control for each time step
+        xi = Z[idx.x[i]]
+        ui = Z[idx.u[i]]
+        xip1 = Z[idx.x[i+1]]
 
-              MOI.optimize!(optimizer, prob)
+        # calculate the hermite simpson constraint violation
+        c[idx.c[i]] = hermite_simpson(params, xi, xip1, ui, dt)
+    end
+    return c # Return the constraint violations
+end
 
-              @info "-IPOPT beginning solve----"
-              return MOI.get(optimizer, MOI.VariablePrimal(), prob.variables[1:num_vars])
-          end
-          `,
-          codeLang: "julia",
-          subtitle: "Julia implementation of the fmincon Function for IPOPT",
-        },
+/**
+ * Defines the equality constraints for the cartpole system.
+ *
+ * This function combines the dynamic constraints, initial condition constraints,
+ * and the terminal conditions into a single set of equality constraints.
+ *
+ * @param params System parameters including initial and final state.
+ * @param Z Combined state and control trajectory vector.
+ * @return All the equality constraints for the problem.
+ */
+function cartpole_equality_constraint(params::NamedTuple, Z::Vector)::Vector
+  # Unpack parameters
+    N, idx, xic, xg = params.N, params.idx, params.xic, params.xg
+
+    # Compute the dynamic constraints from other method
+    dynamics_constraints = cartpole_dynamics_constraints(params, Z)
+
+    # return all equality constraints
+    return [Z[idx.x[1]] - xic; Z[idx.x[N]] - xg; dynamics_constraints]
+end
+
+/**
+ * Solves the cartpole swing-up problem using IPOPT.
+ *
+ * This is the main function that sets up and solves the cartpole
+ * swing up problem using IPOPT and then outputs data about the system.
+ *
+ * @param verbose Boolean that controls the verbosity of IPOPT.
+ * @return X, U, t_vec, and params.
+ */
+function solve_cartpole_swingup(; verbose=true)
+    # Define the system dimensions and time steps
+    nx = 4 # Number of states
+    nu = 1 # Number of control inputs
+    dt = 0.05 # time step
+    tf = 2.0 # final time
+    t_vec = 0:dt:tf # time vector
+    N = length(t_vec) # number of time steps
+
+    # Define LQR cost matrices
+    Q = diagm(ones(nx)) # State cost matrix
+    R = 0.1 * diagm(ones(nu)) # Control cost matrix
+    Qf = 10 * diagm(ones(nx)) # Terminal state cost matrix
+
+    # Define indexing for the optimization variables
+    idx = create_idx(nx, nu, N)
+
+    # Define the initial and goal states
+    xic = [0, 0, 0, 0] # Initial state
+    xg = [0, pi, 0, 0] # Goal state
+
+    # Create a tuple that stores all parameters
+    params = (Q=Q,
+        R=R,
+        Qf=Qf,
+        xic=xic,
+        xg=xg,
+        dt=dt,
+        N=N,
+        idx=idx, mc=1.0, mp=0.2, l=0.5)
+
+    # Set bounds for the optimization variable (primal bounds)
+    x_l = -Inf * ones(idx.nz) # Lower bound
+    x_u = Inf * ones(idx.nz)  # Upper bound
+    for i = 1:N-1 # loop through all control variables
+        x_l[idx.u[i]] .= -10 # Set lower bound for control inputs
+        x_u[idx.u[i]] .= 10 # Set upper bound for control inputs
+    end
+
+
+    # inequality constraint bounds (no inequality constraints)
+    c_l = zeros(0) # Lower bounds
+    c_u = zeros(0) # Upper bounds
+    function inequality_constraint(params, Z) # Define the constraint function
+        return zeros(eltype(Z), 0) # return an empty vector
+    end
+
+    # initial guess
+    z0 = 0.001 * randn(idx.nz) # Random guess for state/control trajectory
+
+    # choose diff type (try :auto, then use :finite if :auto doesn't work)
+    diff_type = :auto # Autodiff type. Can be :auto or :finite
+
+    # Call the optimizer to solve the problem using IPOPT
+    Z = fmincon(cartpole_cost, cartpole_equality_constraint,
+      inequality_constraint, x_l, x_u, c_l, c_u, z0, params, diff_type;
+        tol=1e-6, c_tol=1e-6, max_iters=10_000, verbose=verbose)
+
+    # Extract the state and control solutions from the optimized variables
+    X = [Z[idx.x[i]] for i = 1:N]
+    U = [Z[idx.u[i]] for i = 1:(N-1)]
+
+    return X, U, t_vec, params # Return the results
+end
+                `,
+        codeLang: "julia",
+          subtitle: "Julia Implementation for the Cartpole System Optimization"
+      },
          {
            type: "image",
            content: "/media/images/cartpole.png",

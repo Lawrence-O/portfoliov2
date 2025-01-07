@@ -3,7 +3,7 @@ import { Project } from "@/app/components/project/interfaces";
 export const roboticArmControl: Project = {
     title: "Robotic Arm Control and Trajectory Generation",
     subtitle: "Capstone Project",
-    media: "/media/images/roboticArm.png",
+    media: "/media/videos/rkd_jenga.mp4",
     tags: ["Robotics", "Forward Kinematics", "Inverse Kinematics", "Trajectory Planning", "MATLAB"],
     section: [
         {
@@ -70,12 +70,6 @@ export const roboticArmControl: Project = {
                 content:
                     "The transformation matrix was derived with the convention H-1 = Rotz,θi Transz,di Transx,ai Rotx,αi.",
               },
-             {
-                type: "image",
-                content: "/media/images/dh_params.png",
-                 altContent: "Diagram illustrating DH parameters",
-                subtitle: "Visual representation of the Denavit-Hartenberg parameters.",
-              },
             {
               type: "code",
               content: `
@@ -119,9 +113,14 @@ end
 function frames = forward_kinematics(robot, thetas)
     frames = zeros(4,4,robot.dof);
     n = robot.dof;
-    frames(:,:,1)=Homog(thetas(1),robot.dh_parameters(1,1), robot.dh_parameters(1,2), robot.dh_parameters(1,3));
+    frames(:,:,1)=Homog(thetas(1),robot.dh_parameters(1,1), 
+      robot.dh_parameters(1,2), 
+      robot.dh_parameters(1,3));
     for i=2:n
-        frames(:,:,i)=frames(:,:,i-1)*Homog(thetas(i)+robot.dh_parameters(i,4),robot.dh_parameters(i, 1), robot.dh_parameters(i, 2), robot.dh_parameters(i,3));
+        frames(:,:,i)=frames(:,:,i-1)*Homog(thetas(i)+robot.dh_parameters(i,4),
+          robot.dh_parameters(i, 1), 
+          robot.dh_parameters(i, 2), 
+          robot.dh_parameters(i,3));
     end
 end
               `,

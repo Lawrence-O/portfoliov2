@@ -5,7 +5,7 @@ function LandingImage() {
     <div className="flex flex-col justify-center items-center">
       <Image
         className="rounded-full object-contain"
-        src="/media/images/landing-page-author.jpg"
+        src="/media/images/lawrence-onyango-thumbnail.jpg"
         alt="Picture of the author"
         width={500}
         height={500}

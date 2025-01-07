@@ -70,41 +70,41 @@ export const currResumeSkills: skill[] = [
   {
     skill: "Classic Control Techniques",
     tag: "Control Systems and Optimization",
-    href: "/media/skills/solidworks.svg",
+    href: "/media/skills/classicontrols.svg",
   },
   {
     skill: "Linear Control Techniques (LTI)",
     tag: "Control Systems and Optimization",
-    href: "/media/skills/solidworks.svg",
+    href: "/media/skills/lti.svg",
   },
   {
     skill: "Model Predictive Control",
     tag: "Control Systems and Optimization",
-    href: "/media/skills/solidworks.svg",
+    href: "/media/skills/mpc.svg",
   },
   {
     skill: "Trajectory Optimization",
     tag: "Control Systems and Optimization",
-    href: "/media/skills/solidworks.svg",
+    href: "/media/skills/trajopti.svg",
   },
   {
-    skill: "ILQR",
+    skill: "LQR",
     tag: "Optimal Control Techniques",
-    href: "/media/skills/solidworks.svg",
+    href: "/media/skills/lqr.svg",
   },
   {
     skill: "DDP",
     tag: "Optimal Control Techniques",
-    href: "/media/skills/solidworks.svg",
+    href: "/media/skills/ddp.svg",
   },
   {
     skill: "ILQR",
     tag: "Optimal Control Techniques",
-    href: "/media/skills/solidworks.svg",
+    href: "/media/skills/ilqr.svg",
   },
   {
     skill: "DIRCOL",
     tag: "Optimal Control Techniques",
-    href: "/media/skills/solidworks.svg",
+    href: "/media/skills/dircol.svg",
   },
 ];
