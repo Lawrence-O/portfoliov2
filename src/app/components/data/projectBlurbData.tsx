@@ -2,10 +2,10 @@ import { ProjectBlurb } from "@/app/components/project/ProjectCard";
 
 export const projects: ProjectBlurb[] = [
   {
-    title: "Autonomous Garden Maintenance Robot",
+    title: "Autonomous Garden Maintenance Robot (*Under Construction*)",
     description:
       "This project developed an autonomous robot for garden maintenance, focusing on navigation, plant monitoring through soil sensing and imaging, and precise water and nutrient delivery. The robot uses a combination of computer vision, LiDAR, SLAM, and soil sensors.",
-    media: "/media/images/landing-page-author.jpg",
+    media: "/media/images/garden-robot.jpg",
     tags: [
       "Robotics",
       "Autonomous Navigation",
@@ -15,20 +15,20 @@ export const projects: ProjectBlurb[] = [
       "ROS",
     ],
   },
-  // {
-  //   title: "Distributed Quadrotors Transporting a Load",
-  //   description:
-  //     "This project focused on using a hybrid control approach to manage slack in the cables while also allowing for dynamic reconfigurations of the quadrotors to maintain a stable formation.",
-  //   media: "/media/images/iterativeControl.png",
-  //   tags: [
-  //     "Optimal Control",
-  //     "IPOPT",
-  //     "ALTRO",
-  //     "UAVs",
-  //     "Hybrid Approach",
-  //     "Quaternions",
-  //   ],
-  // },
+  {
+    title: "Distributed Quadrotors Transporting a Load (*Under Construction*)",
+    description:
+      "This project focused on using a hybrid control approach to manage slack in the cables while also allowing for dynamic reconfigurations of the quadrotors to maintain a stable formation.",
+    media: "/media/images/iterativeControl.png",
+    tags: [
+      "Optimal Control",
+      "IPOPT",
+      "ALTRO",
+      "UAVs",
+      "Hybrid Approach",
+      "Quaternions",
+    ],
+  },
   {
     title: "Trajectory Generation with Iterative Learning and Hybrid Control",
     description:
@@ -43,7 +43,7 @@ export const projects: ProjectBlurb[] = [
     ],
   },
   {
-    title: "Trajectory Optimization with DIRCOL, iLQR, and TVLQR",
+    title: "Trajectory Optimization with DIRCOL, iLQR, and TVLQR (*Under Construction*)",
     description:
       "This project explored trajectory optimization for complex systems using Direct Collocation (DIRCOL) and iterative Linear Quadratic Regulator (iLQR). It also used Time-Varying LQR (TVLQR) for tracking solutions on systems such as a cart-pole and a quadrotor using Julia.",
     media: "/media/images/optimalControl.png",
