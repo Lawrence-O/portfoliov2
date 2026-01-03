@@ -2,19 +2,22 @@ import { Project } from "@/app/components/project/interfaces";
 
 export const optimalControlHW2: Project = {
     title: "Optimal Control of Linear Systems: LQR, TVLQR, and MPC",
-    subtitle: "Coursework - Spring 2024",
+    date: "Spring 2024",
     media: "/media/videos/mpc_rendezvous.mp4",
-    tags: ["Optimal Control", "LQR", "Convex Optimization", "MPC", "Julia", "State Space Control"],
+    githubLink: "https://github.com/your-username/optimal-control-hw2",
+    tags: ["Optimal Control", "LQR", "TVLQR", "Convex Optimization", "MPC", "Julia", "State Space Control", "Robotics"],
     section: [
         {
-            title: "Project Overview",
-            navName: "Project Overview",
+            title: "Project Overview: Optimal Control Techniques",
+            navName: "Overview",
             navRef: "project-overview",
             content: [
                 {
                     type: "text",
-                    content:
-                        "This project explores various optimal control techniques applied to different linear systems, including Finite-Horizon Linear Quadratic Regulator (LQR), Infinite-Horizon LQR, and Model Predictive Control (MPC). The project employs several models to demonstrate these techniques, including a double integrator model, a cartpole model, and a rendezvous docking model. The use of the Julia programming language allows for the implementation of these techniques on both continuous and discrete time linear systems. The core objective of this project is to design and simulate controllers that meet specific performance criteria through the use of state-space control methodologies.",
+                    content: [
+                        "This project explores a variety of optimal control techniques applied to different linear and linearized systems. Key methods covered include Finite-Horizon Linear Quadratic Regulator (LQR), Infinite-Horizon LQR, Time-Varying LQR (TVLQR), and Model Predictive Control (MPC).",
+                        "The project employs several dynamic models: a double integrator, a cartpole (for stabilization and swing-up trajectory tracking), and a spacecraft rendezvous model (Clohessy-Wiltshire equations). Implementations are primarily in Julia, applied to both continuous and discrete-time systems. The core objective is to design and simulate controllers achieving specific performance criteria through state-space methodologies."
+                    ]
                 },
             ],
         },
@@ -25,86 +28,41 @@ export const optimalControlHW2: Project = {
             content: [
                 {
                     type: "text",
-                    content:
-                         "The project starts with a Finite-Horizon LQR problem, which is solved using both Convex Optimization and Riccati recursion. The control system was developed using a double integrator model, where the position and velocity of an object are the states, and the acceleration of the object are the controls. We then compared the performance of these two approaches, noting that the implementation of the controller required discretizing the continuous time dynamics of the double integrator.",
+                    content: [
+                         "The project starts with a Finite-Horizon LQR problem, solved via convex optimization and Riccati recursion. A double integrator model (position/velocity states, acceleration controls) was used. The continuous-time dynamics ('Ac', 'Bc') were discretized using the matrix exponential method to get discrete-time matrices ('A', 'B') for controller design."
+                    ]
                 },
-                  {
+                {
                     type: "code",
                     codeLang: "julia",
                     content: `
-# double integrator dynamics
-"""
-Discretizes the continuous-time double integrator dynamics using the matrix exponential.
-# Arguments
-- \`dt\`: The time step.
-# Returns
-A tuple containing the discrete-time state matrix (A) and input matrix (B).
-"""
-function double_integrator_AB(dt::Real):: Tuple{Matrix, Matrix}
-    # Continuous-time state matrix
-    Ac = [0 0 1 0;
-            0 0 0 1;
-            0 0 0 0;
-            0 0 0 0.]
-    # Continuous-time input matrix
-    Bc = [0 0;
-            0 0;
-            1 0;
-            0 1]
-    nx, nu = size(Bc)
-    # Augment the matrices to apply the matrix exponential
-    AB_square = [Ac Bc; zeros(nu, nx + nu)]
-    # Apply the matrix exponential
-    AB_discrete = exp(AB_square*dt)
-    # Extract the discrete-time A and B matrices
-    A = AB_discrete[1:nx, 1:nx]
-    B = AB_discrete[1:nx, nx+1:end]
-    return A, B
+# Solves finite-horizon LQR using convex optimization (Convex.jl)
+function convex_lqr_trajopt(A, B, Q, R, Qf, N, x_ic)
+    nx, nu = size(B)
+    X = Convex.Variable(nx, N) # State trajectory
+    U = Convex.Variable(nu, N-1) # Control trajectory
+
+    # Cost: sum of quadratic state/control costs + terminal state cost
+    cost = sum(0.5*quadform(X[:,k], Q) + 0.5*quadform(U[:,k], R) for k=1:N-1)
+    cost += 0.5*quadform(X[:,N], Qf)
+
+    problem = minimize(cost)
+    problem.constraints += X[:,1] == x_ic # Initial condition
+    for k=1:N-1 # Dynamics constraints
+        problem.constraints += X[:,k+1] == A*X[:,k] + B*U[:,k]
+    end
+    
+    Convex.solve!(problem, ECOS.Optimizer; silent_solver=true)
+    return Matrix(X.value), Matrix(U.value)
 end
-                    `
-                     ,
-                    subtitle: "Julia code for discretizing the double integrator system."
-                  },
-                  {
-                    type: "code",
-                     codeLang: "julia",
-                     content: `
-"""
- Solves a finite-horizon LQR problem using convex optimization.
-"""
-function convex_trajopt(A:: Matrix, B:: Matrix, Q::Matrix, R::Matrix, Qf:: Matrix, N:: Int64, x_ic:: Vector; verbose = false)::Tuple{Vector{Vector{Float64}},Vector{Vector{Float64}}}
- nx, nu = size(B)
- X = cvx.Variable(nx, N)
- U = cvx.Variable(nu, N-1)
- cost = 0
- for k = 1:(N-1)
-     x_k = X[:,k]
-     u_k = U[:,k]
-     cost += 0.5*cvx.quadform(x_k,Q)
-     cost += 0.5*cvx.quadform(u_k, R)
- end
- cost += 0.5*cvx.quadform(X[:,N],Qf)
- prob = cvx.minimize(cost)
- prob.constraints += X[:,1] == x_ic
- for k = 1: (N-1)
-     x_k = X[:,k]
-         u_k = U[:,k]
-     prob.constraints += A*x_k + B*u_k == X[:, k+1]
- end
- cvx.solve!(prob, ECOS.Optimizer; silent_solver = !verbose)
- X = vec_from_mat(X.value)
- U = vec_from_mat(U.value)
- return X,U
-end
-                      `
-                     ,
-                     subtitle: "Implementation of the Convex Trajectory Optimization algorithm."
+                    `,
+                    subtitle: "Julia: LQR via convex optimization (simplified).",
                 },
                   {
                      type: "image",
                     content: "/media/images/finite_lqr_trajectory.png",
                      altContent: "Finite Horizon LQR Trajectory",
-                    subtitle: "Trajectory of the double integrator system using Finite Horizon LQR."
+                    subtitle: "Double integrator trajectory using Finite Horizon LQR."
                  },
             ]
         },
@@ -115,15 +73,13 @@ end
              content: [
                 {
                     type: "text",
-                     content:
-                         "Bellman’s Principle of Optimality was explored by solving the Finite-Horizon LQR problem again, but with updated initial conditions. The results of this test showed that subsections of the resulting optimal trajectories are also optimal, which validated Bellman's Principle of Optimality. "
+                     content: "Bellman’s Principle of Optimality was validated by re-solving the LQR problem with initial conditions from an intermediate point of a previously computed optimal trajectory. The new trajectory matched the corresponding subsection of the original, confirming the principle."
                    },
-                   
                  {
                     type: "image",
                      content: "/media/images/bellman_trajectory.png",
-                     altContent: "Bellman optimal trajectory",
-                     subtitle: "Trajectory of the double integrator system, validating Bellman's Principle of Optimality."
+                     altContent: "Bellman optimal trajectory validation",
+                     subtitle: "Trajectory comparison validating Bellman's Principle."
                    },
              ]
         },
@@ -134,263 +90,206 @@ end
             content: [
                {
                     type: "text",
-                     content:
-                        "The project then explores Infinite-Horizon LQR, where a Riccati recursion was used to achieve a steady-state gain, which was then applied to the cartpole system. This controller was designed to stabilize the cartpole around its unstable equilibrium point at the origin, with the pole pointing straight up. The analysis was performed using different estimated parameter sets to simulate real-world uncertainty. The goal was to stabilize the cartpole while respecting the physical limitations of the system.",
+                     content: [
+                        "Infinite-Horizon LQR was used to find a time-invariant state feedback `u = -Kx`. This involved solving the Discrete Algebraic Riccati Equation (DARE) via iteration until the cost-to-go matrix 'P' converged. The resulting gain 'K' stabilized a cartpole system around its unstable upward equilibrium. The analysis included using different estimated parameters to simulate model uncertainty."
+                     ]
                    },
                 {
                     type: "code",
                     codeLang: "julia",
                     content: `
-"""
-Solves the infinite-horizon LQR problem using Riccati recursion.
-    """
-function ihlqr (A:: Matrix, B:: Matrix, Q::Matrix, R::Matrix, tol = 1e-5, max_iters=1000)
-        P_prev = deepcopy (Q)
-        for i = 1:max_iters
-            K = (R + B'*P_prev*B) \\ B' *P_prev*A
-            P = Q + A'*P_prev* (A - B*K)
-            if norm(P - P_prev) <= tol
-                return P, K
-            end
-        P_prev = P
+# Solves infinite-horizon LQR using Riccati recursion (DARE)
+function infinite_horizon_lqr(A, B, Q, R; tol=1e-5, max_iters=1000)
+    P_prev = Q 
+    P_curr = Q
+    K_curr = zeros(size(B,2), size(A,1))
+
+    for _ = 1:max_iters
+        K_curr = (R + B' * P_prev * B) \\ (B' * P_prev * A) # Calculate gain
+        P_curr = Q + K_curr'*R*K_curr + (A-B*K_curr)'*P_prev*(A-B*K_curr) # Update P
+
+        if norm(P_curr - P_prev) <= tol
+            return P_curr, K_curr # Converged
+        end
+        P_prev = P_curr
     end
-        error("ihlqr did not converge")
-    end
-    `
-                     ,
-                     subtitle: "Julia code for solving infinite horizon LQR."
+    error("Infinite-horizon LQR did not converge")
+end
+    `               ,
+                     subtitle: "Julia: Solving infinite-horizon LQR via DARE iteration."
                 },
-                    {
+                {
                     type: "text",
-                     content:
-                        "The concept of the basin of attraction was explored by varying the initial conditions to determine the limits of the controller. The results show how the linearized model is an approximation that is inaccurate at points far from the linearization point. It also demonstrated that the controller will not work if initial conditions are too far from the equilibrium.",
-                   },
-                     {
+                     content: "The basin of attraction was explored by varying initial conditions to find the limits of the controller, showing how the linearized model's accuracy affects stability. Cost tuning (Q and R matrices) was also analyzed to respect actuator limits."
+                },
+                {
                     type: "image",
-                     content: "/media/images/basin_of_attraction.png",
-                     altContent: "Basin of attraction of the Infinite Horizon LQR",
-                      subtitle: "Visual representation of the basin of attraction for the Infinite Horizon LQR controller."
-                     },
-                  {
-                   type: "text",
-                   content: "The effects of cost tuning were also analyzed by adjusting the Q and R matrices to control the cartpole while also respecting the actuator limits of the system."
-                  },
+                    content: "/media/images/basin_of_attraction.png",
+                    altContent: "Basin of attraction for Cartpole LQR",
+                    subtitle: "Basin of attraction for the cartpole LQR controller."
+                },
             ]
         },
         {
-            title: "Trajectory Tracking with Time-Varying LQR",
-             navName: "Trajectory Tracking",
-            navRef: "trajectory-tracking",
+            title: "Trajectory Tracking with Time-Varying LQR (TVLQR)",
+            navName: "TVLQR Tracking",
+            navRef: "trajectory-tracking-tvlqr",
             content: [
                   {
                     type: "text",
-                    content:
-                         "The project then explored Time-Varying LQR (TVLQR) for trajectory tracking. A swing-up trajectory for the cartpole system was used as a reference trajectory for the controller to follow. The controller was designed based on estimated system parameters, and was tested by simulating the system with a different set of true parameters to simulate real-world uncertainty. The simulations showed the system's ability to track the reference trajectory while meeting performance requirements."
+                    content: [
+                         "Time-Varying LQR (TVLQR) was implemented for cartpole swing-up trajectory tracking. This involved linearizing system dynamics ('A_k', 'B_k') around a reference state ('Xbar') and control ('Ubar') trajectory at each time step 'k'. A backward Riccati recursion computed time-varying gains 'K_k' and cost-to-go matrices 'P_k'. The controller `u_k = Ubar_k - K_k * (X_k - Xbar_k)` was tested with mismatched true and estimated parameters."
+                    ]
                 },
                 {
                      type: "code",
                     codeLang: "julia",
-                    content: `# Define the cost matrices
-Q = diagm([1,1,.05,.1])
-Qf = 10*Q
-R = 0.05*diagm(ones(nu))
+                    content: `
+# Backward Riccati recursion for TVLQR gains (simplified)
+# P_N = Qf (terminal cost-to-go)
+# A_k, B_k are Jacobians at Xbar[k], Ubar[k]
 
-#Time Varying Ricatti Recursion to Calculate Gains
-for k = N-1:-1:1
-    # Linearize dynamics about reference state
-    A = FD.jacobian(_x -> rk4 (params_est, _x, Ubar [k], dt), Xbar[k])
-    B = FD.jacobian (_u -> rk4 (params_est, Xbar[k], _u, dt), Ubar[k])
-    # Compute the time varying gain matrix
-    K[k] = (R + B'*P[k+1]*B) \\ B'*P[k+1]*A
-    # Update the cost to go matrix
-    P[k] = Q + A'*P[k+1]*(A - B*K[k])
+for k = N-1:-1:1 # Iterate backwards from N-1 to 1
+    # K_k = (R + B_k' * P[k+1] * B_k)^-1 * (B_k' * P[k+1] * A_k)
+    K_tvlqr[k] = (R + B_k' * P[k+1] * B_k) \\ (B_k' * P[k+1] * A_k)
+    
+    # P_k = Q + K_tvlqr[k]'*R*K_tvlqr[k] + (A_k - B_k*K_tvlqr[k])'*P[k+1]*(A_k-B_k*K_tvlqr[k])
+    P[k] = Q + A_k' * P[k+1] * (A_k - B_k * K_tvlqr[k]) // Simpler form for illustration
 end
 
-# Simulate the system with the time varying gains
-for i = 1:N-1
-    u = Ubar[i] -K[i]*(X[i] - Xbar[i])
-    X[i+1] = rk4(params_real,X[i],u,dt)
-end
+# Forward simulation uses u_k = Ubar[k] - K_tvlqr[k] * (X_sim[k] - Xbar[k])
+# ... (simulation described in text)
                         `,
-                    subtitle: "Julia implementation of the Time-Varying LQR algorithm."
+                    subtitle: "Julia: TVLQR backward Riccati recursion (core logic)."
                 },
                 {
                     type: "image",
                     content: "/media/images/tvlqr_trajectory.png",
-                    altContent: "Time-Varying LQR Trajectory",
-                    subtitle: "Trajectory of the cartpole system using Time-Varying LQR."
+                    altContent: "TVLQR Trajectory for Cartpole Swing-up",
+                    subtitle: "Cartpole swing-up tracking using TVLQR."
                 }
              ]
         },
         {
-            title: "Optimal Rendezvous and Docking with LQR",
-            navName: "Rendezvous with LQR",
+            title: "Optimal Spacecraft Rendezvous and Docking with LQR",
+            navName: "Rendezvous LQR",
             navRef: "rendezvous-lqr",
             content: [
                {
                     type: "text",
-                    content:
-                         "The project uses optimal control theory to solve a rendezvous and docking problem, specifically a SpaceX Dragon spacecraft docking with the International Space Station (ISS). The dynamics of the system are defined by the Clohessy-Wiltshire equations. A Finite Horizon LQR controller was then used to bring the system to the desired states while maintaining the controls within a specified limit. The results showed the systems ability to successfully meet the required performance metrics.",
-                    },
-                     {
-                         type: "code",
-                         codeLang: "julia",
-                       content: `
-"""
-Creates a discrete time model of the Clohessy-Wiltshire equations
-"""
-    function create_dynamics(dt:: Real)::Tuple{Matrix,Matrix}
-    mu = 3.986004418e14
-        a = 6971100.0
-    n = sqrt(mu/a^3)
-    A = [0 0 0 1 0 0;
-            0 0 0 0 1 0;
-            0 0 0 0 0 1;
-            3*n^2 0 0 0 2*n 0;
-            0 0 0 -2*n 0 0;
-            0 0 -n^2 0 0 0]
-    B = Matrix([zeros(3,3);0.1*I(3)])
-    nx, nu = size(B)
-    AB_square = [A B; zeros(nu, nx + nu)]
-    AB_discrete = exp(AB_square*dt)
-    Ad = AB_discrete[1:nx, 1:nx]
-    Bd = AB_discrete[1:nx, nx+1:end]
-    return Ad, Bd
-    end
-                        `,
-                     subtitle: "Julia code for the Clohessy-Wiltshire Equations."
-                   },
-                    {
-                     type: "image",
-                     content: "/media/images/lqr_rendezvous.png",
-                      altContent: "LQR control for rendezvous",
-                      subtitle: "Rendezvous and Docking using Finite Horizon LQR."
+                    content: [
+                         "This section addresses a spacecraft rendezvous problem using optimal control. The system dynamics are modeled by the Clohessy-Wiltshire (CW) equations, describing relative motion between two orbiting objects (e.g., chaser and target like ISS). These continuous-time linear equations (defined by mean motion 'n') are first discretized.",
+                         "The CW state matrix 'Ac' includes terms like `3n^2` and `2n`, and the input matrix 'Bc' typically allows control over relative accelerations. After discretization to 'Ad' and 'Bd', a Finite-Horizon LQR controller is designed to achieve rendezvous while respecting control input limits."
+                    ]
                     },
             ]
         },
         {
-             title: "Rendezvous and Docking with Convex Trajectory Optimization",
-             navName: "Convex Trajectory Optimization",
-            navRef: "convex-trajectory-opt",
+             title: "Rendezvous with Convex Trajectory Optimization",
+             navName: "Convex TrajOpt",
+            navRef: "convex-trajectory-optimization-rendezvous",
              content: [
                 {
                     type: "text",
-                    content:
-                         "Convex trajectory optimization was used to solve the rendezvous and docking problem, using the same parameters as in the previous section. The trajectory optimization problem was formulated with an LQR cost function, an initial condition constraint, dynamics constraints, bound constraints on the control, and a collision constraint. The optimization produced a trajectory that brought the system to the desired state while avoiding a collision in the y-axis, and the control input remained within the specified bounds."
+                    content: [
+                         "The rendezvous problem was also addressed using convex trajectory optimization. This allowed explicit inclusion of constraints such as control input bounds (`u_min`, `u_max`) and collision avoidance. The optimization minimized an LQR-like cost subject to initial/goal states, system dynamics, and these path constraints."
+                    ]
                     },
                     {
                         type: "code",
                         codeLang: "julia",
                         content: `
-"""
-Solves a trajectory optimization problem using convex optimization.
-"""
-function convex_trajopt(A:: Matrix, B::Matrix, X_ref:: Vector{Vector{Float64}}, x0:: Vector, xg:: Vector, u_min:: Vector, u_max:: Vector, N::Int64)::Tuple{Vector{Vector{Float64}}, Vector{Vector{Float64}}}
-    nx, nu = size(B)
-    X = cvx.Variable(nx, N)
-    U = cvx.Variable(nu, N-1)
-    obj = 0
-    for i=1:N-1
-        x_k = X[:,i]
-        u_k = U[:,i]
-        obj += 0.5*cvx.quadform(x_k - X_ref[i],Q)
-        obj += 0.5*cvx.quadform(u_k, R)
-        end
-    obj += 0.5*cvx.quadform (X[:,N] - X_ref[N],Q)
-    prob = cvx.minimize(obj)
-    prob.constraints += X[:,1] == x0
-    prob.constraints += X[:,end] == xg
-    prob.constraints += X[:,end] [2] <= xg[2]
-    for k = 1: (N-1)
-            x_k = X[:,k]
-        u_k = U[:,k]
-            prob.constraints += (u_k <= u_max)
-            prob.constraints += (u_min <= u_k)
-            prob.constraints += A*x_k + B*u_k == X[:,k+1]
-            prob.constraints += x_k[2] <= xg[2]
+# Solves rendezvous trajectory optimization with constraints (Convex.jl)
+function constrained_convex_trajopt(Ad, Bd, Q, R, X_ref, x0, xg, u_min, u_max, N)
+    # ... (Variable setup for X_cvx, U_cvx) ...
+    X_cvx = Convex.Variable(size(Ad,1), N) 
+    U_cvx = Convex.Variable(size(Bd,2), N-1)
+
+    cost = sum(0.5*quadform(X_cvx[:,k]-X_ref[:,k],Q) + 0.5*quadform(U_cvx[:,k],R) for k=1:N-1)
+    cost += 0.5*quadform(X_cvx[:,N]-X_ref[:,N], Q) # Terminal cost
+
+    problem = minimize(cost)
+    problem.constraints += X_cvx[:,1] == x0   # Initial state
+    problem.constraints += X_cvx[:,N] == xg   # Terminal state
+    
+    for k=1:N-1 # Dynamics and control bounds
+        problem.constraints += X_cvx[:,k+1] == Ad*X_cvx[:,k] + Bd*U_cvx[:,k]
+        problem.constraints += U_cvx[:,k] >= u_min 
+        problem.constraints += U_cvx[:,k] <= u_max
+        # ... (Other path constraints e.g. keep-out zones) ...
     end
-    cvx.solve!(prob, ECOS.Optimizer; silent_solver = true)
-    X = vec_from_mat(X.value)
-    U = vec_from_mat(U.value)
-    return X, U
+    
+    Convex.solve!(problem, ECOS.Optimizer; silent_solver=true)
+    return Matrix(X_cvx.value), Matrix(U_cvx.value)
 end
                         `,
-                        subtitle: "Julia implementation of convex trajectory optimization."
+                        subtitle: "Julia: Convex trajectory optimization for constrained rendezvous."
                       },
                      {
                      type: "video",
-                    content: "/media/videos/convex_rendezvous.mp4",
+                    content: "/media/videos/convex_rendezvous.mp4", // This video is distinct from the main project video
                     altContent: "Rendezvous using convex trajectory optimization",
-                     subtitle: "A trajectory of a spacecraft undergoing rendezvous using convex trajectory optimization."
+                     subtitle: "Spacecraft rendezvous using convex trajectory optimization."
                    },
             ]
         },
         {
-            title: "Trajectory Tracking with Convex MPC",
+            title: "Trajectory Tracking with Convex Model Predictive Control (MPC)",
             navName: "Convex MPC",
-            navRef: "convex-mpc",
+            navRef: "convex-mpc-rendezvous",
             content: [
                  {
                     type: "text",
-                    content:
-                        "The final section of this project implements Convex Model Predictive Control (MPC). This technique provides a solution more robust to system changes than LQR alone. This was accomplished by combining feedback control with the convex trajectory optimization from the previous section. By using MPC, the controller could replan the trajectory in real time. The controller performed well by tracking a reference trajectory while maintaining all defined requirements and constraints.",
+                    content: [
+                        "Convex MPC was implemented for robust trajectory tracking in the rendezvous scenario. At each time step, MPC solves a finite-horizon optimal control problem over a prediction window ('N_mpc'), using the current state ('x_current') as the initial condition to track a segment of the reference ('X_ref_window'). Only the first control input from the optimized sequence is applied. This replanning at each step allows MPC to react to disturbances and model mismatch."
+                    ]
                     },
                    {
                        type: "code",
                         codeLang: "julia",
                        content: `
-"""
-Solves a trajectory optimization problem using convex optimization and model predictive control.
-"""
-function convex_mpc (A:: Matrix, B::Matrix, X_ref_window:: Vector{Vector{Float64}}, 
-                        xic:: Vector, xg::Vector, u_min::Vector, u_max:: Vector, 
-                        N_mpc::Int64)::Vector{Float64}
-    nx, nu = size(B)
-    X = cvx.Variable(nx, N_mpc)
-    U = cvx.Variable(nu, N_mpc-1)
-    obj = 0
-    for k = 1: (N_mpc-1)
-        x_k = X[:,k]
-        u_k = U[:,k]
-        obj += 0.5*cvx.quadform(x_k - X_ref_window[k],Q)
-        obj += 0.5*cvx.quadform(u_k, R)
-        end
-        obj += 0.5*cvx.quadform (X[:, N_mpc] - X_ref_window [N_mpc],Q)
-    prob = cvx.minimize(obj)
-    prob.constraints += X[:,1] == xic
-    prob.constraints += X[:,end] == xg
-        prob.constraints += X[:,end] [2] <= xg[2]
-    for k = 1: (N_mpc-1)
-            x_k = X[:,k]
-            u_k = U[:,k]
-        prob.constraints += (u_k <= u_max)
-            prob.constraints += (u_min <= u_k)
-            prob.constraints += (A*x_k + B*u_k == X[:,k+1])
-            prob.constraints += (x_k[2] <= xg[2])
+# Solves one step of Convex MPC for trajectory tracking (Convex.jl)
+function convex_mpc_step(Ad, Bd, Q, R, X_ref_window, x_current, u_min, u_max, N_mpc)
+    # ... (Variable setup for X_pred, U_pred over N_mpc horizon) ...
+    X_pred = Convex.Variable(size(Ad,1), N_mpc)
+    U_pred = Convex.Variable(size(Bd,2), N_mpc-1)
+
+    cost = sum(0.5*quadform(X_pred[:,k]-X_ref_window[:,k],Q) + 0.5*quadform(U_pred[:,k],R) for k=1:N_mpc-1)
+    cost += 0.5*quadform(X_pred[:,N_mpc]-X_ref_window[:,N_mpc], Q) # Window terminal cost
+
+    problem = minimize(cost)
+    problem.constraints += X_pred[:,1] == x_current # Initial condition for this window
+    
+    for k=1:N_mpc-1 # Dynamics and control bounds for the window
+        problem.constraints += X_pred[:,k+1] == Ad*X_pred[:,k] + Bd*U_pred[:,k]
+        problem.constraints += U_pred[:,k] >= u_min
+        problem.constraints += U_pred[:,k] <= u_max
     end
-    cvx.solve!(prob, ECOS.Optimizer; silent_solver = true)
-    return U[:,1]
+
+    Convex.solve!(problem, ECOS.Optimizer; silent_solver=true)
+    # ... (Error handling and return U_pred.value[:,1]) ...
+    if problem.status == Convex.OPTIMAL || problem.status == Convex.ALMOST_OPTIMAL
+        return U_pred.value[:,1] 
+    else
+        return zeros(size(Bd,2)) # Fallback
+    end
 end
                         `,
-                      subtitle: "Julia implementation of convex MPC."
-                     },
-                     {
-                        type: "video",
-                       content: "/media/videos/mpc_rendezvous.mp4",
-                       altContent: "Rendezvous using Convex MPC",
-                      subtitle: "Trajectory of a spacecraft using convex MPC for rendezvous and docking.",
-                      },
+                      subtitle: "Julia: Single step of Convex MPC for constrained tracking."
+                     }
+                     // Video block for mpc_rendezvous.mp4 was here, removed as it's the main project video.
              ]
          },
         {
-            title: "Conclusion",
+            title: "Conclusion and Key Learnings",
             navName: "Conclusion",
             navRef: "conclusion",
             content: [
                 {
                     type: "text",
-                    content:
-                        "This project demonstrated the implementation and analysis of multiple optimal control techniques. The project covers both linear and nonlinear systems, and both discrete and continuous time. Through the use of various methods like Convex Optimization, Ricatti recursion, and LQR, it provided a comprehensive understanding of how different control methodologies apply to distinct scenarios."
+                    content: [
+                        "This project demonstrated various optimal control techniques, including LQR, TVLQR, and MPC, applied to linear and linearized systems like double integrators, cartpoles, and spacecraft rendezvous models. Key learnings include the importance of system modeling, discretization, the trade-offs in controller complexity, the utility of convex optimization for constraints, and MPC's robustness."
+                    ]
                 }
             ]
         }

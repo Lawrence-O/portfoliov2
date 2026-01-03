@@ -1,35 +1,38 @@
 export interface Project {
     title: string;
-    subtitle?: string;
+    date?: string; 
     media: string;
+    githubLink?: string; 
     section: Section[];
     tags?: string[];
 }
 
 export interface TextContentBlock {
     type: "text";
-    content: string; // text content
+    content: string | string[]; 
+    displayAs?: "text" | "list" | "subtitle"; 
+    orderedList?: boolean; 
 }
 
 export interface ImageContentBlock {
     type: "image";
-    content: string; // url for image
-    altContent?: string; // alt text for image
-    subtitle?: string; // subtitle for image
+    content: string;
+    altContent?: string;
+    subtitle?: string; 
 }
 
 export interface VideoContentBlock {
     type: "video";
-    content: string; // url for video
-    altContent?: string; // alt text for video
-    subtitle?: string; // subtitle for video
+    content: string; 
+    altContent?: string; 
+    subtitle?: string; 
 }
 
 export interface CodeContentBlock {
     type: "code";
-    content: string; // code content
-    codeLang?: string; // language for code
-    subtitle?: string; // subtitle for code
+    content: string; 
+    codeLang?: string; 
+    subtitle?: string; 
 }
 
 export type ContentBlock = TextContentBlock | ImageContentBlock | VideoContentBlock | CodeContentBlock;

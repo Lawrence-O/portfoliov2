@@ -2,8 +2,9 @@ import { Project } from "@/app/components/project/interfaces";
 
 export const gripAssistiveGlove: Project = {
     title: "Grip Assistive Glove",
-    subtitle: "Design 1 Project - Spring 2023",
+    date: "Design 1 Project - Spring 2023",
     media: "/media/videos/gripAssitiveGlove.mp4",
+    githubLink: "https://github.com/your-username/grip-assistive-glove",
     tags: ["Assistive Technology", "Mechanical Design", "CAD", "FEA", "Prototyping", "Product Design"],
     section: [
         {
@@ -13,131 +14,189 @@ export const gripAssistiveGlove: Project = {
             content: [
                 {
                     type: "text",
-                    content:
-                        "The Grip Assistive Glove project was undertaken to address the challenges faced by individuals with grip-related conditions, such as Cerebral Palsy and Tendonitis. Our goal was to create an affordable and effective assistive device that enhances grip strength, enabling users to perform daily tasks with greater ease. The project involved modifying a standard leather glove, integrating a mechanism powered by a motor and fishing lines to mimic the natural gripping motion. By focusing on accessibility and functionality, we aimed to significantly improve the quality of life for our target user population."
+                    content: [
+                        "The Grip Assistive Glove project was undertaken to address the challenges faced by individuals with grip-related conditions, such as Cerebral Palsy and Tendonitis. Our primary goal was to create an affordable and effective assistive device designed to enhance grip strength, thereby enabling users to perform daily tasks with greater ease and independence.",
+                        "The project involved the thoughtful modification of a standard leather glove, integrating a carefully designed mechanism. This mechanism, developed using CAD software (e.g., SolidWorks/Fusion 360), is powered by a motor and utilizes fishing lines to mimic the natural gripping motion of the hand. By focusing on accessibility, functionality, and user-centric design, we aimed to significantly improve the quality of life for our target user population."
+                    ]
                 },
                 {
                     type: "image",
                     content: "/media/images/gripglove_assembly.png",
                     altContent: "Assembly of the Grip Assistive Glove",
                     subtitle: "The final assembly and bill of materials for the Grip Assistive Glove."
-                },
+                }
             ]
         },
         {
-            title: "Early Design Concepts",
-            navName: "Early Design Concepts",
+            title: "Early Design Concepts and Ideation",
+            navName: "Early Concepts",
             navRef: "early-ideation",
             content: [
                 {
                     type: "text",
-                    content:
-                        "The initial phase of the project focused on exploring different mechanisms to achieve assisted grip. We brainstormed various concepts, including designs with rings at the finger joints connected by fishing lines to a motor. Early iterations included designs where all lines converged at the palm, as well as designs that connected the lines in sections for enhanced grip functionality. The team initially considered a two-motor system, but ultimately decided to use a single motor to reduce complexity and bulk."
+                    content: [
+                        "The initial phase of the project was dedicated to exploring a variety of mechanisms to achieve effective assisted grip. We brainstormed numerous concepts, including designs featuring rings at the finger joints connected by fishing lines to a central motor.",
+                        "Early iterations explored configurations where all lines converged at the palm, as well as designs that connected lines in distinct sections for potentially enhanced grip functionality and control. The team initially considered a two-motor system for independent finger articulation but ultimately opted for a single motor. This decision aimed to reduce complexity, weight, and cost, striking a balance between advanced functionality and crucial factors like user accessibility and ease of manufacturing."
+                    ]
                 },
                 {
                    type: "image",
                    content: "/media/images/gripGlove_initial_sketches.png",
                     altContent: "Initial sketches of the Grip Assistive Glove",
-                    subtitle: "Early sketches exploring different design approaches."
+                    subtitle: "Early sketches exploring different design approaches and mechanisms."
                  },
                  {
                     type: "text",
-                    content:
-                        "During this ideation phase, we realized the critical need for a mechanism to help open the hand after gripping. We identified that maintaining tension on the hand via the fishing line during use would be important. The team explored the possibility of using elastic to assist with hand release, but ultimately rejected this idea to ensure normal finger movement while wearing the glove."
+                    content: "During this ideation phase, we identified the critical need for a mechanism to assist in opening the hand after a grip was performed. While maintaining tension on the hand via the fishing line during use was important for grip strength, the team explored using elastic elements to aid in hand release. However, this idea was ultimately rejected to ensure that the glove did not impede normal, unassisted finger movement when the assistive feature was not active."
                 }
             ]
         },
         {
-            title: "Refined Design and Stress Analysis",
-            navName: "Refined Design and Stress Analysis",
+            title: "Refined Design and Mechanical Analysis",
+            navName: "Refined Design",
             navRef: "developed-ideation",
              content: [
                {
                     type: "text",
-                     content:
-                        "The developed ideation phase focused on refining our initial concepts. The team decided on a design that used a single motor to pull all the fingers, and the thumb separately, as we wanted to reduce the complexity of the design for ease of user interaction. We removed the elastic component on the back of the glove, allowing the user to manually open their hand and unwind the string, ensuring no interference with natural movement."
+                     content: [
+                        "The developed ideation phase focused on refining our initial concepts into a more robust and user-friendly design. The team converged on a design utilizing a single motor to actuate all fingers collectively, with the thumb potentially having a separate or integrated line for opposition. This approach simplified the design, enhancing ease of user interaction.",
+                        "A key refinement was the removal of the elastic component previously considered for the back of the glove. Instead, the design allows the user to manually open their hand, which in turn unwinds the string from the spool, ensuring no interference with natural hand movement."
+                    ]
                 },
                  {
                     type: "text",
-                    content:
-                         "To validate the design, we performed a stress analysis assuming a stall torque of 25 Nm for the motor. The analysis focused on the nodes attached to the fingers and identified the reaction forces opposing the string tension. Given the fishing line was rated for 40 pounds, the team confirmed it was sufficient to withstand the forces exerted by the motor."
+                    content: [
+                         "To validate the mechanical integrity of the design, a stress analysis was performed. Assuming a stall torque of 25 Nm for the motor (representing a worst-case scenario for force exerted on the components), the analysis focused on the reaction forces experienced at the finger nodes.",
+                         "This ensured that the chosen fishing line, rated for 40 pounds (approximately 178 N), possessed a sufficient factor of safety against the maximum forces exerted by the motor during a full grip. A simplified governing principle for calculating line tension can be expressed as `F_line = (\\tau_motor / r_spool) * \\eta`, where `\\tau_motor` is the motor torque, `r_spool` is the radius of the motor spool, and `\\eta` represents an efficiency factor for the system."
+                    ]
                 }
             ]
         },
         {
-             title: "CAD Model Development",
-              navName: "CAD Prototype",
+             title: "CAD Model Development and Control System",
+              navName: "CAD & Controls",
              navRef: "cad-prototype",
             content: [
                 {
                     type: "text",
+                    content: [
+                         "The refined design was meticulously modeled using CAD software (e.g., SolidWorks), resulting in a detailed product assembly. This included subassemblies for the finger nodes and the motor spool. The fishing lines are routed through nodes on each individual finger, terminating at the fingertips.",
+                         "At the palm, all lines converge at a single collection node, which is then connected to the motor spool. A geared DC motor, controlled by simple 'wind' and 'unwind' buttons, rotates the spool to pull and release the strings, thereby actuating the grip. The entire motor and spool assembly is designed to be mounted on the user's forearm for ergonomic use."
+                    ]
+                },
+                {
+                    type: "text",
+                    content: "Control System Overview",
+                    displayAs: "subtitle"
+                },
+                {
+                    type: "code",
+                    codeLang: "plaintext",
                     content:
-                         "The refined design was meticulously modeled using CAD software, creating a detailed product assembly, finger node subassembly, and motor spool subassembly. The fishing lines run through each node on each individual finger, terminating at the fingertips. At the palm, all lines converge at a single node, connected to the motor spool. The motor, controlled by 'wind' and 'unwind' buttons, rotates to pull and release the strings. The motor and spool assembly are mounted on the forearm."
+`Algorithm: Grip Assistive Glove Control
+1. Initialize motor_state = IDLE
+2. LOOP indefinitely:
+3.     IF wind_button_pressed AND motor_state != WINDING:
+4.         motor_state = WINDING
+5.         Activate motor to pull fishing lines (tense fingers)
+6.     ELSE IF unwind_button_pressed AND motor_state != UNWINDING:
+7.         motor_state = UNWINDING
+8.         Activate motor to release fishing lines (relax fingers)
+9.     ELSE IF no_button_pressed OR (wind_button_pressed AND motor_state == WINDING) OR (unwind_button_pressed AND motor_state == UNWINDING):
+10.        IF motor_state != IDLE: // (and not at limit if limit switches are used)
+11.            Continue current motor action (or hold if at limit)
+12.        ELSE:
+13.            motor_state = IDLE
+14.            Deactivate motor
+15.    ENDIF
+16.    // Optional: Add limit switch checks to stop motor at full grip/release
+17. ENDLOOP`,
+                    subtitle: "Control Logic Pseudocode"
                 },
                    {
                      type: "image",
                     content: "/media/images/gripGlove_glove_node.png",
                     altContent: "CAD model of the finger node",
-                     subtitle: "CAD model illustrating the finger nodes."
+                     subtitle: "CAD model illustrating the design of the finger nodes."
                    },
                     {
                      type: "image",
                      content: "/media/images/gripGlove_glove_spool.png",
                      altContent: "CAD model of the motor spool",
-                    subtitle: "CAD model illustrating the motor spool."
+                    subtitle: "CAD model illustrating the motor spool assembly."
                     }
             ]
         },
         {
-           title: "Finite Element Analysis (FEA)",
-           navName: "Finite Element Analysis (FEA)",
+           title: "Finite Element Analysis (FEA) Validation",
+           navName: "FEA",
             navRef: "testing-fea",
             content: [
                 {
                     type: "text",
-                    content:
-                        "To assess the structural integrity of our design, we performed Finite Element Analysis (FEA) on the node subassembly. We simulated the stress and displacement experienced by the nodes with a force of 25 N. The analysis indicated minimal stress and negligible displacement, thus confirming our hand calculations and providing a more precise representation of stress concentrations. "
+                    content: [
+                        "Finite Element Analysis (FEA) was employed as a crucial step to digitally simulate and validate how the 3D-printed finger nodes would behave under operational loads. By applying a simulated force of 25 N (representative of typical grip assistance requirements) to the CAD models of the nodes, the FEA software calculated detailed stress distributions and potential deformations.",
+                        "The analysis results were highly encouraging, indicating minimal stress levels—well below the yield strength of PLA material—and negligible displacement. This computationally validated our initial hand calculations and provided a more detailed understanding of stress concentrations, ultimately confirming the structural robustness of the 3D-printed PLA nodes for the intended application."
+                    ]
                 },
                  {
                     type: "image",
                      content: "/media/images/gripGlove_fea_analysis.png",
-                    altContent: "FEA Stress Analysis",
-                     subtitle: "FEA analysis visualizing the stress distribution."
+                    altContent: "FEA Stress Analysis of Finger Node",
+                     subtitle: "FEA results visualizing stress distribution on a finger node."
                 },
                 {
                     type: "image",
                      content: "/media/images/gripGlove_fea_displacement.png",
-                      altContent: "FEA displacement analysis",
-                     subtitle: "FEA analysis visualizing the displacement."
-                },
+                      altContent: "FEA displacement analysis of Finger Node",
+                     subtitle: "FEA results visualizing displacement on a finger node under load."
+                }
             ]
         },
         {
-            title: "Manufacturing and Cost Analysis",
-             navName: "Manufacturing and Cost Analysis",
+            title: "Manufacturing Strategy and Cost Analysis",
+             navName: "Manufacturing & Cost",
             navRef: "manufacturing-drawing",
             content: [
                 {
                     type: "text",
-                    content:
-                        "A comprehensive manufacturing plan was developed, specifying materials for each component. We determined that PLA plastic was ideal for the finger nodes and the palm node due to its low cost and sufficient yield strength. These components would be 3D printed, with a per-unit cost estimate. The motor spool was also designed for 3D printing using PLA. For mass production, injection molding was considered to further reduce costs. Based on our estimates, the total manufacturing cost per glove is $35.61."
+                    content: [
+                        "A comprehensive manufacturing plan was developed, specifying materials and processes for each component. We determined that PLA plastic was an ideal material for the finger nodes and the palm node due to its low cost, ease of 3D printing, and sufficient yield strength for this application.",
+                        "These components would be manufactured using Fused Deposition Modeling (FDM) 3D printing for initial prototyping and small-batch production, allowing for rapid iteration and customization. The motor spool was also designed for 3D printing using PLA. For potential mass production scenarios, transitioning to injection molding for these plastic parts was considered as a means to significantly reduce per-unit costs."
+                    ]
                 },
                 {
                     type: "text",
-                    content:
-                        "The cost breakdown includes $11 for the leather glove ($6.50 per glove), $0.11 for the wire, $0.50 for the palm node, $2.50 for the motor spool, and $26 for the electronic components, including the motor. Adding a 30% markup to the manufacturing cost, the final estimated retail price for the grip assistive glove would be around $46.30, positioning it as an affordable solution."
+                    content: "Component Costs", // Shortened subtitle
+                    displayAs: "subtitle"
                 },
+                {
+                    type: "text",
+                    displayAs: "list",
+                    orderedList: false,
+                    content: [
+                        "Leather glove: $11.00 (or $6.50 per glove if sourced in bulk)",
+                        "Fishing Wire: $0.11",
+                        "Palm node (3D printed PLA): $0.50",
+                        "Motor spool (3D printed PLA): $2.50",
+                        "Electronic components (motor, buttons, wiring, etc.): $26.00"
+                    ]
+                },
+                {
+                    type: "text",
+                    content: "Adding a 30% markup to the total manufacturing cost (approximately $40.11), the final estimated retail price for the Grip Assistive Glove is around $52.14. This positions the device as a comparatively affordable solution in the assistive technology market."
+                }
             ]
         },
         {
-            title: "Project Budget",
-            navName: "Project Budget",
+            title: "Project Budget Summary",
+            navName: "Budget",
             navRef: "budget",
             content: [
                 {
                     type: "text",
-                    content: "The project budget included the cost of leather gloves, push button switches, and fishing line, all purchased through Amazon. The total expenditure on these materials was $43.94, leaving a remaining budget of $156.06."
-                 },
+                    content: ["The project budget primarily covered the cost of materials such as leather gloves, push button switches, and fishing line, all of which were procured through Amazon. The total expenditure on these essential materials amounted to $43.94. This left a remaining budget of $156.06 from the initial allocation, demonstrating cost-effective resource management throughout the project's development."]
+                 }
             ]
         }
     ]

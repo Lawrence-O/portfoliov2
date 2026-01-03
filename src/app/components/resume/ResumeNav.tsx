@@ -1,5 +1,6 @@
-import { Socials } from "@/app/components/shared/Socials";
 import { useRouter } from 'next/navigation';
+
+import { Socials } from "@/app/components/shared/Socials";
 
 export interface resumeNavProps {
   id: string;
@@ -15,7 +16,7 @@ function ResumeNavItem(props: resumeNavProps & { isActive?: boolean }) {
       <a
         key={props.id}
         href={`#${props.id}`}
-        className={`resume-nav-link text-xm transition duration-150 ease-in-out transform hover:scale-110 ${
+        className={`resume-nav-link text-sm transition duration-150 ease-in-out transform hover:scale-110 ${
           props.isActive ? "clicked" : ""
         }`}
       >
@@ -36,13 +37,13 @@ function ResumeNavBlurb() {
       <h2 className="text-xl font-bold">
         Software Engineer & Future Roboticist
       </h2>
-      <p className="text-xm">
+      <p className="text-sm">
         I design intuitive, software-driven solutions that bring engineering
         principles to life in the digital world.
       </p>
       <div className="flex flex-row justify-between">
         <div></div>
-        <button onClick={redirectResume} className="text-xm italic underline transition duration-300 ease-in-out hover:text-textHover">
+        <button onClick={redirectResume} className="text-sm italic underline transition duration-300 ease-in-out hover:text-textHover">
           View Full Resume
         </button>
       </div>

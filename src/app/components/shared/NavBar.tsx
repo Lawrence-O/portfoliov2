@@ -1,16 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
 import { usePathname } from "next/navigation";
+import React from "react";
 
-interface navItemProps {
+/**
+ * Props for the NavItem component.
+ */
+interface NavItemProps {
+  /** The text to display for the navigation item. */
   text: string;
+  /** The URL the navigation item links to. */
   href: string;
+  /** The current active path of the application. */
   currentPath: string;
 }
 
-export function NavItem(props: navItemProps) {
+/**
+ * Represents a single item in the navigation bar.
+ * Highlights itself if its href matches the currentPath.
+ * @param props - The properties for the NavItem.
+ * @returns A Next.js Link component styled as a navigation item.
+ */
+export function NavItem(props: NavItemProps) {
   const isActive = props.href === props.currentPath;
   return (
     <Link
@@ -24,6 +36,11 @@ export function NavItem(props: navItemProps) {
   );
 }
 
+/**
+ * The main navigation bar component for the portfolio.
+ * It displays navigation links to different sections of the site like Home, About (Resume), and Projects.
+ * @returns A div element containing the navigation structure.
+ */
 export function NavBar() {
   const pathname = usePathname();
 

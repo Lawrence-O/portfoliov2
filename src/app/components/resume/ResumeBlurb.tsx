@@ -38,12 +38,14 @@ export function ResumeBlurb(props: resumeBlurb) {
         {props.showSubtitle && (
           <h3 className="text-sm italic">{props.subtitle}</h3>
         )}
-        {props.description.map((desc, index) => (
-          <p key={index} className="text-sm">{desc}</p>
-        ))}
+        <ul className="list-disc pl-5 space-y-1 text-sm">
+          {props.description.map((desc, index) => (
+            <li key={index}>{desc}</li>
+          ))}
+        </ul>
         <div>
           {props.technologies && (
-            <ul className="flex flex-row flex-wrap">
+            <ul className="flex flex-row flex-wrap mt-2"> {/* Added mt-2 for spacing */}
               {props.technologies.map((tech, index) => (
                 <li key={index} className="text-xs bg-secondary p-1 m-1 rounded-md transition duration-300 ease-in-out group-hover:bg-contrast">
                   {tech}
@@ -67,4 +69,3 @@ export function ResumeBlurb(props: resumeBlurb) {
     </div>
   );
 }
-

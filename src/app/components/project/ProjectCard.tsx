@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+
 import { createSlug } from "@/app/components/utils/scrollUtils";
 
 export interface ProjectBlurb {
@@ -9,6 +10,8 @@ export interface ProjectBlurb {
   media: string;
   href?: string;
   tags: string[];
+  status?: string;
+  date?: string; // YYYY-MM-DD
 }
 
 function ProjectContainer(props: ProjectBlurb) {
@@ -18,40 +21,67 @@ function ProjectContainer(props: ProjectBlurb) {
 
   return (
     <div
-      className="flex flex-col bg-background p-4 rounded-3xl items-center cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105"
+      className="flex flex-col h-full bg-background p-4 rounded-3xl cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105"
       onClick={handleClick}
     >
-      {props.media.endsWith(".mp4") ? (
-        <video
-          src={props.media}
-          className="aspect-video w-full rounded-3xl border-2 border-secondary transition-transform duration-300 ease-in-out transform hover:scale-105" // Border styles
-          autoPlay
-          loop
-          muted
-        />
+      {props.media.endsWith(".mp4") || props.media.endsWith(".gif") ? (
+        props.media.endsWith(".gif") ? (
+          <Image
+            src={props.media}
+            className="aspect-video w-full object-cover rounded-3xl border-2 border-secondary"
+            alt=""
+            width={500}
+            height={500}
+            unoptimized
+          />
+        ) : (
+          <video
+            src={props.media}
+            className="aspect-video w-full rounded-3xl border-2 border-secondary object-cover"
+            autoPlay
+            loop
+            muted
+          />
+        )
       ) : (
         <Image
           src={props.media}
-          className="aspect-video w-full object-cover rounded-3xl border-2 border-secondary transition-transform duration-300 ease-in-out transform hover:scale-105" // Border and object-cover
+          className="aspect-video w-full object-cover rounded-3xl border-2 border-secondary"
           alt=""
           width={500}
           height={500}
         />
       )}
-      <h1 className="pl-8 pt-5 text-2xl font-bold text-left w-full">
-        {props.title}
-      </h1>
-      <p className="pl-8 whitespace-pre-wrap text-left text-xm w-full">
-        {props.description}
-      </p>
-      <div className="pl-8 mt-5 w-full text-left">
-        <Link
-          className="inline-block font-bold text-lg transition duration-300 ease-in-out transform hover:text-textHover hover:scale-110"
-          href={props.href ?? `/projects/${createSlug(props.title)}`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          Continue Reading
-        </Link>
+      <div className="flex flex-col flex-grow">
+        <h1 className="pl-4 pt-5 text-2xl font-bold text-left w-full">
+          {props.title}
+        </h1>
+        <p className="pl-4 whitespace-pre-wrap text-left text-sm w-full line-clamp-3">
+          {props.description}
+        </p>
+        <div className="pl-4 mt-2 w-full flex flex-wrap gap-2">
+          {props.tags.map((tag, index) => (
+            <span key={index} className="bg-secondary text-xs font-semibold px-2.5 py-0.5 rounded-full text-text">
+              {tag}
+            </span>
+          ))}
+        </div>
+        {props.status === "Under Construction" && (
+          <div className="pl-4 mt-3 w-full text-left">
+            <span className="bg-yellow-500 text-black text-xs font-bold px-2.5 py-0.5 rounded-full">
+              Under Construction
+            </span>
+          </div>
+        )}
+        <div className="pl-4 mt-auto pt-5 w-full text-left">
+          <Link
+            className="inline-block font-bold text-lg transition duration-300 ease-in-out transform hover:text-textHover hover:scale-110"
+            href={props.href ?? `/projects/${createSlug(props.title)}`}
+            onClick={handleClick}
+          >
+            Continue Reading
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -59,8 +89,8 @@ function ProjectContainer(props: ProjectBlurb) {
 
 export function ProjectCard(props: { projects: ProjectBlurb[] }) {
   return (
-    <div className="flex justify-center items-center w-full mt-5">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-[50%]">
+    <div className="flex justify-center items-start w-full mt-5 px-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl">
         {props.projects.map((project, index) => (
           <ProjectContainer key={index} {...project} />
         ))}

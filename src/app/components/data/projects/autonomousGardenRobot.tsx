@@ -2,8 +2,9 @@ import { Project } from "@/app/components/project/interfaces";
 
 export const autonomousGardenRobot: Project = {
   title: "Autonomous Garden Maintenance Robot",
-  subtitle: "Fall 2023",
+  date: "Fall 2023",
   media: "/media/images/safeguardAgainstPests.png",
+  githubLink: "https://github.com/your-username/autonomous-garden-robot", // Added placeholder
   tags: ["Robotics", "Autonomous Navigation", "Computer Vision", "Sensors", "Embedded Systems", "ROS"],
   section: [
     {
@@ -14,14 +15,14 @@ export const autonomousGardenRobot: Project = {
         {
           type: "text",
           content:
-            "This project focused on developing an autonomous garden maintenance robot that assists in resource management and plant care. The robot integrates computer vision, LiDAR, and SLAM techniques to autonomously navigate a garden, analyze plants using a soil sensor probe, and precisely administer water and nutrients based on its analysis. The goal was to create a self-sustaining, intelligent gardener that could revolutionize horticulture and agriculture practices.",
+            "This project focused on developing an autonomous garden maintenance robot that assists in resource management and plant care. The robot integrates computer vision (for tasks such as plant identification or fiducial marker detection), LiDAR, and SLAM techniques (specifically Hector SLAM) to autonomously navigate a garden, analyze plants using a soil sensor probe, and precisely administer water and nutrients based on its analysis. The system was developed primarily using ROS (Robot Operating System) for high-level control and sensor integration, with C++ and Python for its nodes. The goal was to create a self-sustaining, intelligent gardener that could revolutionize horticulture and agriculture practices.",
         },
-         {
-              type: "image",
-              content: "/media/images/optimalControlIntro.png",
-              altContent: "Diagram illustrating the ILC and hybrid trajectory optimization concepts",
-              subtitle: "General Overview of Project Concepts",
-           }
+        {
+          type: "image",
+          content: "/media/images/placeholder_garden_robot_overview.png", // Suggested: Replace with a high-level diagram of the garden robot system
+          altContent: "Conceptual overview diagram of the Autonomous Garden Robot system",
+          subtitle: "High-Level System Overview of the Autonomous Garden Robot",
+        }
       ],
     },
     {
@@ -53,7 +54,7 @@ export const autonomousGardenRobot: Project = {
         {
           type: "text",
           content:
-            "The robot is designed to autonomously navigate a garden using a combination of camera, LiDAR, and fiducial markers, creating a map and identifying plants within. The robot uses its soil sensor to analyze each plant's needs, dispensing water and nutrients at user-specified frequencies. Additionally, it collects plant images which are available to the user through an online interface. The robot's design prioritizes efficiency, precision, and consistency in plant care.",
+            "The robot is designed to autonomously navigate a garden using a combination of camera, LiDAR, and fiducial markers, creating a map and identifying plants within. The robot uses a multi-parameter soil sensor probe (e.g., measuring moisture, pH) to analyze each plant's needs; this data directly informs the decision-making logic for dispensing precise amounts of water and nutrients at user-specified frequencies. Additionally, it collects plant images which are available to the user through an online interface. The robot's design prioritizes efficiency, precision, and consistency in plant care.",
         },
       ],
     },
@@ -65,7 +66,7 @@ export const autonomousGardenRobot: Project = {
           {
             type: "text",
             content:
-               "The system architecture is designed to be robust and modular, handling various aspects of the robot.  A combination of ROS and FREE RTOS were used to ensure interoperability between the low and high level modules. The system is structured into several key subsystems:",
+               "The system architecture is designed to be robust and modular, handling various aspects of the robot. A combination of ROS and FreeRTOS was a strategic choice: ROS provided a flexible framework for high-level tasks like navigation, perception, and inter-process communication, while FreeRTOS offered the real-time determinism required for precise low-level control of motors and sensor data acquisition. The system is structured into several key subsystems:",
           },
          {
             type: "image",
@@ -99,6 +100,51 @@ export const autonomousGardenRobot: Project = {
              altContent: "Diagram showcasing the middleware and data flow",
              subtitle: "Diagram of the middleware and data flow through the robot.",
           },
+          {
+            type: "text",
+            content: "**Core Operational Logic (Pseudocode):** The robot's decision-making for plant care follows a defined sequence:"
+          },
+          {
+            type: "code",
+            codeLang: "plaintext",
+            content:
+`Algorithm: Autonomous Plant Care Logic
+1. Robot navigates to designated plant/area using SLAM-generated map.
+2. Deploy soil sensor probe into the soil.
+3. Read sensor values (e.g., moisture, pH, nutrient levels).
+4. FOR EACH monitored_parameter (e.g., moisture, specific nutrient):
+5.     IF current_value < plant_profile.threshold[parameter] THEN
+6.         Calculate required_amount based on deficit and plant needs.
+7.         Activate_dispenser(parameter, required_amount).
+8.     ENDIF
+9. ENDFOR
+10. Capture image of the plant/area for visual record.
+11. Log sensor_data, actions_taken, and image to the remote server.
+12. Proceed to next plant/area or return to base.`
+          },
+          {
+            type: "text",
+            content: "**Simplified State Machine:** The robot's operational states can be visualized as follows:"
+          },
+          {
+            type: "code",
+            codeLang: "mermaid",
+            content:
+`graph TD
+    A[Idle] --> B(Navigate to Plant);
+    B --> C{Plant Reached?};
+    C -- Yes --> D[Sense Soil Conditions];
+    D --> E[Analyze Sensor Data];
+    E --> F{Action Required?};
+    F -- Yes --> G[Dispense Resources];
+    G --> H[Log Data & Image];
+    F -- No --> H; % If no action, proceed to logging
+    H --> I{More Plants to Visit?};
+    I -- Yes --> B; % Loop to next plant
+    I -- No --> A; % Return to Idle
+    C -- No --> B; % Continue navigation
+`
+          }
       ],
     },
         {
@@ -138,7 +184,7 @@ export const autonomousGardenRobot: Project = {
              {
                     type: "text",
                     content:
-                        "Our testing focused on validating key aspects of the system. We conducted a traversable soil test to ensure mobility over various surfaces. A mapping fiducial test was also performed to verify that the robot could map the garden using fiducials.  We also tested our sensor subsystem to see if it could accurately measure the pH, moisture, and temperature of soil, as well as water dispensing for the ability to precisely deliver water to the plant. Lastly a photo capture test was performed to verify the robots ability to send data to a server.",
+                        "Our testing focused on validating key aspects of the system. We conducted a traversable soil test to ensure mobility over various surfaces. A mapping fiducial test was also performed to verify that the robot could map the garden using fiducials. We also tested our sensor subsystem to see if it could accurately measure the pH, moisture, and temperature of soil, as well as water dispensing for the ability to precisely deliver water to the plant. Lastly a photo capture test was performed to verify the robot's ability to send data to a server. For enhanced academic review, future iterations could detail specific quantitative metrics from these tests (e.g., 'soil sensor accuracy was ±X% for moisture readings compared to calibrated instruments,' or 'fiducial detection success rate was Y% under Z lighting conditions').",
                   },
                   {
                     type: "text",

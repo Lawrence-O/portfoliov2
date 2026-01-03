@@ -1,11 +1,13 @@
 "use client";
 
-import { Project } from "@/app/components/project/interfaces";
 import Image from "next/image";
-import { ProjectSection } from "@/app/components/project/ProjectSection";
-import { ProjectNav } from "@/app/components/project/ProjectNav";
 import { useEffect, useRef, useState } from "react";
+
+import { Project } from "@/app/components/project/interfaces";
+import { ProjectNav } from "@/app/components/project/ProjectNav";
+import { ProjectSection } from "@/app/components/project/ProjectSection";
 import { getVisibleSection } from "@/app/components/utils/scrollUtils";
+
 import { GradientDivider } from "../shared/GradientDivider";
 
 function ProjectTitle(props: {

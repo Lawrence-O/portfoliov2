@@ -1,19 +1,19 @@
 "use client";
 
-import { NavBar } from "@/app/components/shared/NavBar";
-import { resumeBlurb } from "@/app/components/resume/ResumeBlurb";
-import { skill, ResumeSkills } from "@/app/components/resume/ResumeSkills";
-import { GradientDivider } from "@/app/components/shared/GradientDivider";
-import { ResumeText } from "@/app/components/resume/ResumeText";
-import { ResumeNav } from "@/app/components/resume/ResumeNav";
+import React, { useEffect, useRef } from "react";
+
 import {
   currEducation,
   currResumeBody,
   resumeSections,
 } from "@/app/components/data/info";
-
 import { currResumeSkills } from "@/app/components/data/resumeSkillsData";
-import React, { useEffect, useRef } from "react";
+import { resumeBlurb } from "@/app/components/resume/ResumeBlurb";
+import { ResumeNav } from "@/app/components/resume/ResumeNav";
+import { skill, ResumeSkills } from "@/app/components/resume/ResumeSkills";
+import { ResumeText } from "@/app/components/resume/ResumeText";
+import { GradientDivider } from "@/app/components/shared/GradientDivider";
+import { NavBar } from "@/app/components/shared/NavBar";
 import { getVisibleSection } from "@/app/components/utils/scrollUtils";
 
 interface ResumeContainerProps {

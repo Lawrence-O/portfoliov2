@@ -1,22 +1,22 @@
-import { Project } from "@/app/components/project/interfaces";
-import { movingTargetPlanner } from "@/app/components/data/projects/movingTargetPlanner";
-import { motionPlanner } from "@/app/components/data/projects/motionPlanners";
-import { symbolicPlanner } from "@/app/components/data/projects/symbolicPlanner";
-import { multiRobotFrontierExploration } from "@/app/components/data/projects/multiagentFrontier";
-import { safeguardAgainstPests } from "@/app/components/data/projects/sap";
-import { ultimateQuiz } from "@/app/components/data/projects/quizGame";
+import { autonomousGardenRobot } from "@/app/components/data/projects/autonomousGardenRobot";
+import { cableSuspendedLoads } from "@/app/components/data/projects/cableSuspendLoads";
 import { gripAssistiveGlove } from "@/app/components/data/projects/gripAssistiveGlove";
 import { habitatAirlockLinkage } from "@/app/components/data/projects/habitatAirlock";
+import { roboticArmControl } from "@/app/components/data/projects/jengaRobot";
+import { motionPlanner } from "@/app/components/data/projects/motionPlanners";
+import { movingTargetPlanner } from "@/app/components/data/projects/movingTargetPlanner";
+import { multiRobotFrontierExploration } from "@/app/components/data/projects/multiagentFrontier";
 import {optimalControlHW2} from "@/app/components/data/projects/optimalControlHw2";
 import { optimalControlHW3 } from "@/app/components/data/projects/optimalControlHw3";
-import { roboticArmControl } from "@/app/components/data/projects/jengaRobot";
 import { optimalControlHW4 } from "@/app/components/data/projects/optimalControlHw4";
-import { cableSuspendedLoads } from "@/app/components/data/projects/cableSuspendLoads";
-import { autonomousGardenRobot } from "@/app/components/data/projects/autonomousGardenRobot";
+import { ultimateQuiz } from "@/app/components/data/projects/quizGame";
+import { safeguardAgainstPests } from "@/app/components/data/projects/sap";
+import { symbolicPlanner } from "@/app/components/data/projects/symbolicPlanner";
+import { Project } from "@/app/components/project/interfaces";
 
 export const projectPagesDict: { [slug: string]: Project } = {
   "real-time-target-interception-with-multi-goal-a": movingTargetPlanner,
-  "motion-planner": motionPlanner,
+  "sampling-based-motion-planners": motionPlanner,
   "symbolic-planner": symbolicPlanner,
   "multi-robot-frontier-exploration": multiRobotFrontierExploration,
   "robotic-sentry-safe-guard-against-pests": safeguardAgainstPests,

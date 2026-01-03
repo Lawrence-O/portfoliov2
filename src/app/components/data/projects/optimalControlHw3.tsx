@@ -3,7 +3,7 @@ import { Project } from "@/app/components/project/interfaces";
 export const optimalControlHW3: Project = {
   title: "Trajectory Optimization with DIRCOL, iLQR, and TVLQR",
   subtitle: "Spring 2024",
-  media: "/media/images/optimalControlHW.png",
+  media: "/media/images/quadrotor_reorient.gif",
   tags: ["Optimization", "Control Theory", "iLQR", "DIRCOL", "TVLQR", "Julia"],
   section: [
     {
@@ -14,19 +14,19 @@ export const optimalControlHW3: Project = {
         {
           type: "text",
           content:
-            "This project explores various optimal motion planning and control algorithms, focusing on Direct Collocation (DIRCOL) and iterative Linear Quadratic Regulator (iLQR) techniques. These algorithms are applied to solve trajectory optimization problems for systems such as a cart-pole and a quadrotor. The project also includes implementations of Time-Varying LQR (TVLQR) for trajectory tracking in the presence of model mismatch. All implementations were done using the Julia programming language.",
+            "This project explores optimal motion planning and control algorithms, focusing on Direct Collocation (DIRCOL) and iterative Linear Quadratic Regulator (iLQR) techniques. These algorithms are applied to trajectory optimization problems for dynamic systems including a cart-pole and a quadrotor. The project also implements Time-Varying LQR (TVLQR) for trajectory tracking in the presence of model mismatch. All implementations were developed using the Julia programming language.",
         },
       ],
     },
     {
       title: "Direct Collocation for Cart-Pole Trajectory Optimization",
-      navName: "Direct Collocation (DIRCOL) for Cart-Pole",
+      navName: "DIRCOL for Cart-Pole",
       navRef: "dircol-cartpole",
       content: [
         {
           type: "text",
           content:
-            "This section utilizes the Direct Collocation (DIRCOL) method to solve trajectory optimization problems for a cart-pole system. We started by solving a simple Linear Program (LP) using the IPOPT solver to showcase its effectiveness for general optimization problems. Then, DIRCOL was used to compute an open-loop trajectory, which is subsequently tracked using TVLQR.",
+            "This section applies the Direct Collocation (DIRCOL) method to solve trajectory optimization problems for a cart-pole system. The implementation uses the IPOPT solver for the underlying nonlinear programming problem. DIRCOL computes an open-loop trajectory by transcribing the continuous optimal control problem into a finite-dimensional optimization problem.",
         },
         {
           type: "code",
@@ -196,23 +196,17 @@ end
         codeLang: "julia",
           subtitle: "Julia Implementation for the Cartpole System Optimization"
       },
-         {
-           type: "image",
-           content: "/media/images/cartpole.png",
-           altContent: "Diagram of a cart-pole system",
-           subtitle: "Visual representation of the cart-pole system.",
-        },
       ],
     },
     {
       title: "Cart-Pole Swing-Up with Direct Collocation",
-      navName: "Cart-Pole Swingup with DIRCOL",
+      navName: "Cart-Pole Swing-Up",
       navRef: "cartpole-swingup",
       content: [
         {
           type: "text",
           content:
-            "This section focuses on applying DIRCOL to solve the challenging cart-pole swing-up problem. The aim is to move the pole from a downward position to an upright position by applying a horizontal force on the cart. This implementation used Hermite-Simpson integration to handle the dynamics constraints, and the control inputs were held constant for each time step. Subsequently, the generated open-loop trajectory was tracked using TVLQR to provide feedforward and feedback control.",
+            "This section applies DIRCOL to the cart-pole swing-up problem, where the goal is to swing the pole from a downward hanging position to an upright balanced position by applying horizontal forces to the cart. The implementation uses Hermite-Simpson integration for the dynamics constraints, with control inputs held constant over each time step. The resulting open-loop trajectory is then tracked using TVLQR for closed-loop control.",
         },
          {
           type: "code",
@@ -292,27 +286,33 @@ end
         },
          {
            type: "image",
-           content: "/media/images/cartpole_swingup_traj.png",
-           altContent: "Trajectory of the cartpole swingup",
-           subtitle: "Resulting cartpole trajectory.",
+           content: "/media/images/cartpole_states.png",
+           altContent: "State trajectory of the cartpole swingup",
+           subtitle: "Resulting cartpole state trajectory from DIRCOL.",
         },
         {
          type: "image",
-         content: "/media/images/cartpole_swingup_controls.png",
+         content: "/media/images/cartpole_controls.png",
          altContent: "Control input of the cartpole swingup",
-         subtitle: "Control input required to swing the cartpole.",
+         subtitle: "Control input required to swing the cartpole up.",
+         },
+        {
+         type: "video",
+         content: "/media/videos/cartpole_video.mp4",
+         altContent: "Animation of the cartpole swingup maneuver",
+         subtitle: "Cartpole swing-up animation.",
          },
       ],
     },
     {
       title: "Tracking DIRCOL Solution with TVLQR",
-      navName: "Tracking DIRCOL Solution with TVLQR",
+      navName: "TVLQR Tracking",
       navRef: "tracking-dircol-tvlqr",
       content: [
         {
           type: "text",
           content:
-            "Building on the previous section, this part focuses on tracking the DIRCOL solution using TVLQR. The process involves generating K gains using the TVLQR algorithm and then simulating the closed-loop system with both feedforward and feedback control. This demonstrates how to correct a system when there is model mismatch. RK4 integration is used for the system dynamics here.",
+            "This section demonstrates tracking the DIRCOL-generated trajectory using Time-Varying LQR (TVLQR). The process involves computing time-varying feedback gains along the nominal trajectory, then simulating the closed-loop system with both feedforward and feedback control. This approach handles model mismatch by correcting deviations from the planned trajectory. RK4 integration is used for simulating the system dynamics.",
         },
         {
           type: "code",
@@ -345,27 +345,27 @@ end
         },
         {
           type: "image",
-           content: "/media/images/cartpole_tvlqr_traj.png",
-           altContent: "Trajectory of the cartpole tracking controller",
-           subtitle: "Cartpole trajectory while using a TVLQR controller.",
+           content: "/media/images/cartpole_tvlqr_states.png",
+           altContent: "State trajectory of the cartpole with TVLQR tracking",
+           subtitle: "Cartpole state trajectory while using a TVLQR controller.",
         },
         {
            type: "image",
            content: "/media/images/cartpole_tvlqr_controls.png",
            altContent: "Control inputs of cartpole tracking controller",
-           subtitle: "Control inputs for the cartpole while tracking with TVLQR",
+           subtitle: "Control inputs for the cartpole while tracking with TVLQR.",
         },
       ],
     },
     {
       title: "iLQR for Quadrotor Trajectory Optimization",
-      navName: "iLQR for Quadrotor Trajectory Optimization",
+      navName: "iLQR for Quadrotor",
       navRef: "ilqr-quadrotor",
        content: [
         {
           type: "text",
           content:
-            "This section details the implementation of the iLQR algorithm for trajectory optimization of a 6 degree of freedom (DOF) quadrotor. The algorithm was designed to make the quadrotor follow a predefined aerobatic maneuver by minimizing a defined cost function. The continuous-time dynamics of the quadrotor were discretized using RK4 integration.",
+            "This section details the implementation of iterative LQR (iLQR) for trajectory optimization of a 6-DOF quadrotor. The algorithm generates trajectories for aerobatic maneuvers by iteratively improving a nominal trajectory to minimize a quadratic cost function. The continuous-time quadrotor dynamics are discretized using RK4 integration.",
         },
          {
           type: "code",
@@ -432,51 +432,39 @@ end
         },
          {
            type: "image",
-           content: "/media/images/quadrotor_traj.png",
-           altContent: "Trajectory of quadrotor from ilqr",
-           subtitle: "Resulting Quadrotor Trajectory using iLQR.",
-         },
-        {
-           type: "image",
-           content: "/media/images/quadrotor_controls.png",
-           altContent: "Control input of quadrotor from iLQR",
-           subtitle: "Control Inputs for the quadrotor using iLQR.",
+           content: "/media/images/quadrotor_trajectories.png",
+           altContent: "Trajectory of quadrotor from iLQR",
+           subtitle: "Resulting quadrotor trajectory using iLQR.",
          },
        ],
     },
     {
-      title: "Tracking iLQR Solution with Time-Varying LQR",
-      navName: "Tracking iLQR Solution with TVLQR",
+      title: "Tracking iLQR Solution with TVLQR",
+      navName: "Quadrotor TVLQR Tracking",
       navRef: "tracking-ilqr-tvlqr",
       content: [
         {
           type: "text",
           content:
-            "This section demonstrates the use of TVLQR to track the iLQR trajectory from the previous section.  The closed-loop system accounts for model mismatch by using both feedforward and feedback control. The controllers were able to track the generated trajectory despite small model mismatches.",
+            "This section demonstrates TVLQR tracking of the iLQR-generated quadrotor trajectory. The closed-loop controller combines feedforward control from the nominal trajectory with feedback control to reject disturbances and handle model mismatch. The controller successfully tracks the reference trajectory despite parameter variations in the simulated system.",
         },
         {
            type: "image",
-           content: "/media/images/quadrotor_tvlqr_traj.png",
-           altContent: "Trajectory of the quadrotor with TVLQR",
-           subtitle: "The quadrotor trajectory while tracking with TVLQR.",
-         },
-         {
-            type: "image",
-           content: "/media/images/quadrotor_tvlqr_attitude.png",
-           altContent: "Attitude of the quadrotor with TVLQR",
-           subtitle: "The attitude of the quadrotor while tracking with TVLQR.",
+           content: "/media/images/quadrotor_orientations.png",
+           altContent: "Orientation of the quadrotor with TVLQR",
+           subtitle: "The quadrotor orientation while tracking with TVLQR.",
          },
       ],
     },
      {
-      title: "Quadrotor Reorientation with Collision Avoidance",
-      navName: "Quadrotor Reorientation with Collision Avoidance",
+      title: "Multi-Quadrotor Reorientation with Collision Avoidance",
+      navName: "Collision Avoidance",
       navRef: "quadrotor-reorientation",
        content: [
         {
           type: "text",
           content:
-            "This final section implements trajectory optimization for three planar quadrotors, with an emphasis on collision avoidance. The objective is to reorient the quadrotors while maintaining a specified distance away from each other. This complex problem incorporates a collision constraint along with the dynamic constraints, which was solved using DIRCOL.",
+            "This section implements trajectory optimization for three planar quadrotors with collision avoidance constraints. The objective is to reorient all quadrotors to new configurations while maintaining minimum separation distances between them. The problem is solved using DIRCOL with additional inequality constraints enforcing collision avoidance.",
         },
          {
           type: "code",
@@ -590,33 +578,27 @@ end
           },
          {
            type: "image",
-           content: "/media/images/quadrotor_reorient_distance.png",
+           content: "/media/images/quadrotor_distances.png",
            altContent: "Distance between the 3 quadrotors",
-           subtitle: "The distances between the quadrotors are shown.",
+           subtitle: "The distances between quadrotors during reorientation.",
          },
           {
           type: "image",
-          content: "/media/images/quadrotor_reorient_traj.png",
-          altContent: "Trajectories of the three quadrotors",
-           subtitle: "Trajectories of the three quadrotors.",
-         },
-        {
-           type: "image",
-           content: "/media/images/quadrotor_reorient_orientations.png",
-           altContent: "Orientations of the three quadrotors",
-           subtitle: "The quadrotor's orientations during reorientation.",
+          content: "/media/images/quadrotor_reorient.gif",
+          altContent: "Animation of the three quadrotors reorienting",
+           subtitle: "Animation showing the three quadrotors reorienting while avoiding collisions.",
          },
        ],
     },
        {
-      title: "Project Conclusion",
+      title: "Conclusion",
        navName: "Conclusion",
       navRef: "conclusion",
       content: [
         {
           type: "text",
           content:
-            "This project provided hands-on experience with several important optimal control algorithms, starting with simple optimization using IPOPT, and then solving trajectory optimization problems for complex systems such as the cart-pole and the quadrotor. This project successfully demonstrated how to leverage these algorithms with constraint programming and model predictive control, providing a good basis for understanding how to solve more complex real-world problems in the future.",
+            "This project provided practical experience with key optimal control algorithms for trajectory optimization. Starting with DIRCOL using IPOPT for the cart-pole system, the project progressed to iLQR for quadrotor trajectory generation, and demonstrated TVLQR for robust trajectory tracking. The multi-quadrotor collision avoidance problem illustrated how to incorporate inequality constraints into trajectory optimization. These techniques form a foundation for solving complex motion planning problems in robotics and autonomous systems.",
         },
       ],
     },
