@@ -2,9 +2,10 @@ import { Project } from "@/app/components/project/interfaces";
 
 export const cableSuspendedLoads: Project = {
   title: "Hybrid Control for Cable-Suspended Loads with Quadrotors",
+  subtitle: "Multi-agent trajectory optimization with dynamic constraint handling",
   date: "Spring 2024",
   media: "/media/images/cableSus_4_agents.png",
-  tags: ["Optimal Control", "IPOPT", "Trajectory Optimization", "UAVs", "Hybrid Approach", "Quaternions"],
+  tags: ["Optimal Control", "IPOPT", "Trajectory Optimization", "UAVs", "Hybrid Systems", "Julia"],
   section: [
     {
       title: "Project Overview",
@@ -14,14 +15,19 @@ export const cableSuspendedLoads: Project = {
         {
           type: "text",
           content:
-            "This project extends the framework from 'Scalable Cooperative Transport of Cable-Suspended Loads with UAVs using Distributed Trajectory Optimization' to address the challenges presented by slack in suspension cables. We introduce a hybrid control strategy that enables quadrotors to dynamically reconfigure when a quadrotor becomes inactive and causes slack. The project uses IPOPT for trajectory optimization and analyzes its performance limitations compared to alternative solvers like ALTRO. The implementation was done in Julia, leveraging its strong numerical computation capabilities and packages like `Ipopt.jl`. The core objective was to maintain safe and efficient transport of a payload under varying conditions using a novel hybrid approach.",
+            "Picture a heavy package being carried by multiple drones, each connected by cables. What happens if one drone fails? The cables go slack, and the system needs to adapt instantly. This project tackles that challenge: **how do you plan trajectories when cables can transition between taut and slack?** It's a hybrid control problem—the physics changes depending on cable state.",
         },
         {
-           type: "image",
-           content: "/media/images/cableSuspension9_agents.png", 
-           altContent: "Diagram of multi-quadrotor cable-suspended load transport with hybrid control",
-           subtitle: "Hybrid Control for Cable-Suspended Load System",
-        }
+          type: "text",
+          content:
+            "We used **trajectory optimization** (finding the best path through space and time) with a solver called IPOPT. The key innovation: an **active set method** that dynamically switches constraints when cables change state. Implementation was done in **Julia**.",
+        },
+        {
+          type: "image",
+          content: "/media/images/cableSuspension9_agents.png",
+          altContent: "Diagram of multi-quadrotor cable-suspended load transport with hybrid control",
+          subtitle: "Nine-agent cable-suspended load transport system",
+        },
       ],
     },
     {
@@ -29,271 +35,352 @@ export const cableSuspendedLoads: Project = {
       navName: "Background",
       navRef: "background",
       content: [
-          {
-            type: "text",
-            content:
-              "Previous research has shown the benefits and challenges of using quadrotors for transporting heavy loads, emphasizing the cost-effectiveness, versatility, and ease of deployment of such systems. Existing trajectory optimization solutions, like the one implemented with ALTRO in the 'Scalable Cooperative Transport' paper, have difficulty in handling scenarios with slack cables, which can occur if a quadrotor becomes inactive, or due to workspace constraints. This project seeks to improve upon this, by creating a solution for scenarios where slack is introduced. The paper models the cables as massless rigid links, and we do the same, and only introduce slack to the system through zeroing out the tension constraints."
-          },
         {
           type: "text",
           content:
-             "Our work builds on this existing framework by introducing a hybrid control strategy to manage slack. The approach also uses an active set method to switch the constraints of a quadrotor when it has slack to properly model the physics. An active set method allows the system to dynamically switch between different sets of active constraints, effectively changing the model based on whether a cable is taut or slack, without needing entirely separate dynamic models. Similar to the original paper, quaternions were used to allow for aggressive maneuvers and more complex reconfigurations. The objective was to transport a payload through dynamic environments while exploring the performance limitations of IPOPT in large batch problems.",
+            "Using multiple drones to carry loads is attractive: they're flexible, easy to deploy, and can lift more together than alone. But previous work assumed cables always stay tight. In reality, cables go slack—when a drone fails, when there's turbulence, or when maneuvering aggressively. Standard trajectory optimizers like ALTRO struggle with this discontinuity.",
+        },
+        {
+          type: "text",
+          content:
+            "Our solution: treat slack as a **mode switch**. Instead of separate physics models for 'all cables taut' vs 'some cables slack', we use one model with **switchable constraints**. The optimizer figures out when to enforce cable tension constraints and when to relax them.",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Key Innovations",
+        },
+        {
+          type: "text",
+          displayAs: "list",
+          content: [
+            "**Active set method** for dynamic constraint switching",
+            "**Quaternion-based orientation** for aggressive maneuvers",
+            "**Hybrid state machine** for taut/slack cable transitions",
+            "Analysis of `IPOPT` performance in large-scale non-convex problems",
+          ],
         },
       ],
     },
-      {
-          title: "Problem Formulation and Hybrid Approach",
-          navName: "Problem Formulation",
-          navRef: "problem-formulation",
+    {
+      title: "Problem Formulation",
+      navName: "Formulation",
+      navRef: "problem-formulation",
+      content: [
+        {
+          type: "text",
+          content:
+            "The math gets involved, but here's the intuition: each quadrotor has 13 states (position, orientation as a quaternion, linear and angular velocity), while the payload is just a point mass (6 states). Cables are modeled as massless rigid links—they transmit force but have no dynamics of their own.",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Quadrotor Dynamics",
+        },
+        {
+          type: "text",
+          content: "Each drone's motion follows Newton's laws plus the cable force pulling on it:",
+        },
+        {
+          type: "math",
+          block: true,
+          content: String.raw`\dot{x} = \begin{bmatrix} \dot{r} \\ \dot{q} \\ \dot{v} \\ \dot{\omega} \end{bmatrix} = \begin{bmatrix} v \\ \frac{1}{2} q \otimes \hat{\omega} \\ g + \frac{1}{m} \left( R(q) F(u) + F_c \right) \\ J^{-1} \left( \tau(u) - \omega \times J\omega \right) \end{bmatrix}`,
+          subtitle: "Quadrotor state dynamics with cable force Fc",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Load Dynamics",
+        },
+        {
+          type: "text",
+          content: "The payload is modeled as a point mass with 6 states:",
+        },
+        {
+          type: "math",
+          block: true,
+          content: String.raw`\dot{x}^{\ell} = \begin{bmatrix} \dot{r}^{\ell} \\ \dot{v}^{\ell} \end{bmatrix} = \begin{bmatrix} v^{\ell} \\ g + \frac{1}{m^{\ell}} \sum_{i=1}^{L} F_c^i \end{bmatrix}`,
+          subtitle: "Load dynamics with cable forces from L active quadrotors",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Optimization Objective",
+        },
+        {
+          type: "text",
+          content: "The trajectory optimization minimizes a cost function penalizing state deviation, control effort, and terminal error:",
+        },
+        {
+          type: "math",
+          block: true,
+          content: String.raw`J = \int_{0}^{T} \left[ (x - x_d)^T Q (x - x_d) + u^T R u \right] dt + \phi(x(T))`,
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Constraints",
+        },
+        {
+          type: "text",
+          displayAs: "list",
           content: [
-            {
-              type: "text",
-              content:
-                "The project formulated a trajectory optimization problem for a cable-suspended load with multiple quadrotors, modeling the cables as massless rigid links. These cables transmit forces but do not have dynamics of their own. We aimed to solve a system where some of the quadrotors go slack. Our hybrid approach uses the concept of active sets to define two states for the quadrotors, the state where they are actively supporting the load, and the state when they are slack. This allows us to maintain one dynamics function and dynamically change the constraints of the system."
-            },
-            {
-               type: "text",
-               content: "The dynamics of each quadrotor `i` are modeled as a 13-state system (position `r`, orientation (quaternion `q`), linear velocity `v`, angular velocity `\omega`):",
-            },
-            {
-            type: "text",
-            content: `
-                \\dot{x} = \\begin{bmatrix}
-                    \\dot{r} \\\\
-                    \\dot{q} \\\\
-                    \\dot{v} \\\\
-                    \\dot{\\omega} \\\\
-                \\end{bmatrix} = \\begin{bmatrix}
-                v \\\\
-                \\frac{1}{2} q \\otimes \\hat{\\omega} \\\\
-                g + \\frac{1}{m} \\left( R(q) F(u) + F_c(u_5, x, x') \\right) \\\\
-                J^{-1} \\left( \\tau(u) - \\omega \\times J\\omega \\right)
-                \\end{bmatrix}
-            `,
-          },
-            {
-                type: "text",
-                content:
-                     "Where `r` is the position, `q` is a unit quaternion representing orientation, `R(q)` is a quaternion-dependent rotation matrix, `v` is the linear velocity, `ω` is the angular velocity (with `\hat{\omega}` being its skew-symmetric matrix form for quaternion kinematics `q \\otimes \hat{\omega}`), `x` is the 13-element state vector `[r, q, v, \omega]`, `u` is the control vector (typically motor thrusts/torques), `x’` is the load state vector, `g` is gravity and `m` is mass. The forces and torques generated by the quadrotor motors are `F(u)` and `τ(u)`. The cable force exerted by the specific cable on this quadrotor is `F_{c}` which depends on cable state (e.g. tension, represented by `u_5` if it's a control variable or derived) and the states of the quadrotor `x` and load `x'`.",
-            },
-              {
-                 type: "text",
-                content: "The load dynamics are modeled as: ",
-              },
-             {
-               type: "text",
-                content: `
-                    \\dot{x}^{\\ell} = \\begin{bmatrix}
-                        \\dot{r}^{\\ell} \\\\
-                        \\dot{v}^{\\ell} \\\\
-                    \\end{bmatrix} = \\begin{bmatrix}
-                        v^{\\ell} \\\\
-                        g + \\frac{1}{m^{\\ell}} F^{\\ell}(x^{\\ell}, u^{\\ell}, x^{1:L})
-                    \\end{bmatrix}
-                `,
-              },
-            {
-               type:"text",
-               content: "Where `r^{\ell}` is the load position, `v^{\ell}` is the load velocity, `m^{\ell}` is the load mass, and `F^{\ell}` is the net force on the load, including tensions from all active cables and any other external forces (potentially dependent on load control `u^{\ell}` and states of all `L` quadrotors `x^{1:L}`)."
-            },
-            {
-                type: "text",
-                content: "The optimization problem seeks to minimize a cost function `J`, typically penalizing deviations from a desired trajectory (`x_d`), control effort (`u`), and ensuring the final state `x(T)` meets objectives via a terminal cost `\\phi(x(T))`. A general form is:"
-            },
-            {
-                type: "text",
-                content: "`J = \\int_{0}^{T} ( (x - x_d)^T Q (x - x_d) + u^T R u ) dt + \\phi(x(T))`"
-            },
-            {
-                type: "text",
-                content: "This is subject to constraints including: discrete quadrotor dynamics (ensuring physics are obeyed at each time step), discrete load dynamics, initial conditions (starting state of quadrotors and load), final load conditions (desired end position/velocity of the load), workspace bounds (keeping quadrotors within safe operational areas), quadrotor motor limits (respecting physical capabilities of motors), positive cable tensions (cables can only pull, not push – this is modified by the hybrid logic), equal cable forces (if distributing load evenly), fixed cable length (geometric constraint between quadrotor and load), and collision avoidance (maintaining safe distances between quadrotors and any obstacles)."
-            },
-            {
-                type: "text",
-                content: "**Hybrid Control Logic (Pseudocode):** The active set method manages the switch between 'active' and 'slack' cable states:"
-            },
-            {
-                type: "code",
-                codeLang: "plaintext",
-                content:
-`Algorithm: Hybrid Control for Cable Slack Management (Conceptual)
+            "**Dynamics constraints** — discretized quadrotor and load dynamics",
+            "**Boundary conditions** — initial and final state requirements", 
+            "**Cable constraints** — fixed length geometric constraint",
+            "**Tension constraints** — cables can only pull (modified by hybrid logic)",
+            "**Motor limits** — respecting physical actuator capabilities",
+            "**Collision avoidance** — safe distances between agents",
+          ],
+        },
+      ],
+    },
+    {
+      title: "Hybrid Control Strategy",
+      navName: "Hybrid Control",
+      navRef: "hybrid-control",
+      content: [
+        {
+          type: "text",
+          content:
+            "Here's the heart of the project: the **active set method**. Think of it as a traffic cop for constraints. When a cable is taut, we enforce that it stays at its fixed length and can only pull (not push). When it goes slack, we drop those constraints—the cable is effectively disconnected. The optimizer solves the trajectory, checks each cable's tension, and updates which constraints are 'active' for the next solve.",
+        },
+        {
+          type: "code",
+          codeLang: "plaintext",
+          content:
+`HYBRID CONTROL ALGORITHM
+========================
 
-1. Initialize: Define all quadrotors (Q_i) as initially ACTIVE (cable taut).
-2. Iterative Optimization Loop (e.g., at each control update or replanning cycle):
-    a. Solve Trajectory Optimization: Based on the current set of ACTIVE/SLACK states for each cable, formulate and solve the trajectory optimization problem. This involves:
-        - Applying full constraints (e.g., positive tension, fixed cable length) for ACTIVE cables.
-        - Applying modified constraints (e.g., zero tension, relaxed geometric constraints) for SLACK cables.
-    b. Evaluate Cable States:
-        i. For each ACTIVE quadrotor Q_i:
-           - If calculated_tension_i < slack_threshold:
-             - Transition Q_i to SLACK state.
-             - Mark system configuration as changed.
-        ii. For each SLACK quadrotor Q_i:
-           - If reattachment_conditions_met (e.g., cable path clear, quadrotor in position to re-tension):
-             - Transition Q_i to ACTIVE state.
-             - Mark system configuration as changed.
-    c. Re-solve if Configuration Changed:
-        - If the state of any cable (ACTIVE/SLACK) has changed in step 2b, re-formulate and re-solve the optimization problem (back to step 2a) with the updated constraint set.
-        - Otherwise, proceed with the current trajectory.
-3. Apply Control: Implement the first part of the optimized trajectory. Repeat from step 2.
-`
-            },
-            {
-                type: "text",
-                content: "**Conceptual Julia Code for IPOPT Problem Definition:**"
-            },
-            {
-                type: "code",
-                codeLang: "julia",
-                content:
-`# Conceptual Julia Snippet for IPOPT Problem Definition using Ipopt.jl
-using Ipopt
+INITIALIZE:
+  Set all cables to ACTIVE (taut)
 
-# 1. Define Problem Dimensions (Illustrative)
-num_knot_points = 50
-num_states_per_quad = 13
-num_controls_per_quad = 4 # (e.g., thrust and 3 torques) or 5 (if tension is a control)
-num_states_load = 6
+OPTIMIZATION LOOP:
+  1. Solve trajectory optimization
+     - Apply full constraints for ACTIVE cables
+     - Apply relaxed constraints for SLACK cables
+  
+  2. Evaluate each cable state:
+     IF cable is ACTIVE:
+       IF tension < threshold → set SLACK
+     IF cable is SLACK:
+       IF reattach conditions met → set ACTIVE
+  
+  3. IF any state changed:
+       Re-solve with updated constraints
+     ELSE:
+       Apply control, advance to next step
+
+REPEAT until trajectory complete`,
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Julia Implementation",
+        },
+        {
+          type: "text",
+          content:
+            "The **conceptual Julia code** below shows how to define the IPOPT problem for this trajectory optimization:",
+        },
+        {
+          type: "code",
+          codeLang: "julia",
+          content:
+`using Ipopt
+
+# Problem dimensions
+num_knots = 50
 num_quads = 4
+nx_quad = 13    # states per quadrotor
+nu_quad = 4     # controls per quadrotor
+nx_load = 6     # load states
 
-total_vars = num_knot_points * (num_quads * (num_states_per_quad + num_controls_per_quad) + num_states_load)
-# total_constraints = ... (based on dynamics, path constraints, etc.)
+# Total decision variables
+total_vars = num_knots * (
+    num_quads * (nx_quad + nu_quad) + nx_load
+)
 
-# 2. Define Objective Function (eval_f)
-#    - Takes a vector x (all decision variables flattened)
-#    - Returns a scalar cost (e.g., sum of squared errors from ref_traj + control effort)
+# Objective: tracking error + control effort
 function eval_f(x)
-    # cost = 0.0
-    # for k = 1:num_knot_points
-    #   current_states_quads = ... extract from x ...
-    #   current_state_load = ... extract from x ...
-    #   current_controls_quads = ... extract from x ...
-    #   cost += stage_cost(current_states_quads, current_state_load, current_controls_quads, ref_traj[k])
-    # end
-    # cost += terminal_cost(...)
-    return cost_placeholder
+    cost = 0.0
+    for k = 1:num_knots
+        xq = get_quad_states(x, k)
+        xl = get_load_state(x, k)
+        u  = get_controls(x, k)
+        cost += stage_cost(xq, xl, u)
+    end
+    return cost + terminal_cost(x)
 end
 
-# 3. Define Constraint Functions (eval_g)
-#    - Takes x and populates a vector g with constraint violations.
-#    - Constraints include: dynamics, initial/final conditions, cable length, tension limits (hybrid), etc.
+# Constraints: dynamics, cables, bounds
 function eval_g(x, g)
-    # idx = 1
-    # For each knot point k:
-    #   g[idx:idx_end] = dynamics_constraint_quad_i(x_k, u_k, x_{k+1}) for each quad i
-    #   g[...] = dynamics_constraint_load(...)
-    #   g[...] = cable_length_constraint_quad_i(...)
-    #   g[...] = tension_constraint_quad_i(...) (handles ACTIVE/SLACK logic)
-    # ... and other constraints ...
-    return constraint_violations_placeholder
+    idx = 1
+    for k = 1:(num_knots - 1)
+        # Quadrotor dynamics
+        for i = 1:num_quads
+            g[idx] = quad_dynamics(x, k, i)
+            idx += 1
+        end
+        
+        # Load dynamics
+        g[idx] = load_dynamics(x, k)
+        idx += 1
+        
+        # Cable constraints (hybrid)
+        for i = 1:num_quads
+            g[idx] = cable_length(x, k, i)
+            g[idx+1] = tension(x, k, i)
+            idx += 2
+        end
+    end
 end
 
-# 4. Define Gradients (eval_grad_f, eval_jac_g)
-#    - (Often using Automatic Differentiation, e.g., ForwardDiff.jl, or finite differences)
-# eval_grad_f(x, grad_f) = ...
-# eval_jac_g(x, rows, cols, values) = ... (sparse Jacobian structure)
+# Configure solver
+prob = CreateProblem(total_vars, bounds...)
+AddOption(prob, "mu_strategy", "adaptive")
+AddOption(prob, "tol", 1e-4)
+AddOption(prob, "max_iter", 1000)
 
-# 5. Create IPOPT Problem
-# prob = Ipopt.CreateProblem(...)
-# Set options (e.g., tolerance, max_iterations)
-# Add_Str_Option(prob, "mu_strategy", "adaptive")
-# Add_Num_Option(prob, "tol", 1e-4)
-
-# 6. Provide Initial Guess
-# prob.x = very_good_initial_guess_vector
-
-# 7. Solve
-# status = Ipopt.Solve_Problem(prob)
-# solution = prob.x
-`
-            },
-            {
-                type: "text",
-                content: "**Flowchart of Hybrid Control Logic:** The hybrid control logic can be visualized as an iterative process. It starts with an initial assumption of all quadrotors being active. A trajectory optimization is solved. Then, for each quadrotor, its cable tension is checked. If an active quadrotor's cable goes slack, its state is changed, and constraints are modified (e.g., removing positive tension requirement). If a slack quadrotor meets re-attachment criteria, its state is changed back to active, and original constraints are re-applied. If any configuration change occurs, the optimization is re-initialized and re-solved. This loop continues, adapting the trajectory to the dynamic cable states."
-            }
-        ]
+# Solve
+prob.x = initial_guess
+status = IpoptSolve(prob)
+solution = prob.x`
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Hybrid Control Flow",
+        },
+        {
+          type: "text",
+          content:
+            "The hybrid control logic is an **iterative process**: all quadrotors start as *active*, trajectory optimization is solved, cable tensions are evaluated, state transitions occur as needed (active→slack or slack→active), and constraints are updated accordingly. If any configuration changes, the optimization re-solves with the new constraint set.",
+        },
+      ],
     },
      {
-        title: "Simulation Results and Observations",
-        navName: "Simulation Results",
-        navRef: "simulation-results",
-        content: [
-          {
-            type: "text",
-            content:
-                "We conducted several simulations to evaluate the performance of our algorithm under various scenarios. These simulations were performed on an Apple MacBook using an M1 Pro processor and 16 GB RAM. The code was implemented in the Julia programming language. Trim conditions were used to seed IPOPT with valid initial states and controls.",
-            },
-             {
-                 type: "text",
-                 content: "The simulations produced several key results:"
-             },
-                {
-                type: "text",
-                    content:
-                    "The solver, IPOPT, was able to provide trajectories that qualitatively met our expectations of the problem. However, due to the high non-convexity and non-linearity of the problem, the solver exhibited challenges in achieving full numerical convergence (specifically, the dual infeasibility did not reduce to machine precision). This is a common issue in highly complex, non-convex optimization problems and can be attributed to factors like problem scale, numerical conditioning, or the proximity of the initial guess to a good local minimum. While our simulations produced trajectories that meet our expectations of how the system should behave, the dual infeasibility did not converge to 0."
-                },
-              {
-                type: "image",
-                 content: "/media/images/cableSus_6_agent_plot.png",
-                 altContent: "Position plot for a 6 agent configuration",
-                subtitle: "Position plot for a 6-agent configuration from start to goal.",
-              },
-               {
-                 type: "text",
-                 content: "The time required for IPOPT to produce a trajectory varied significantly depending on the number of agents and other problem complexities. The solver converged well in the early iterations but struggled to reach full convergence in later iterations."
-                 },
-                  {
-                    type: "image",
-                    content: "/media/images/cableSus_time.png",
-                     altContent: "Time required for IPOPT solve for different number of agents",
-                    subtitle: "Time required for IPOPT solve for different number of agents.",
-                 },
-                    {
-                    type: "image",
-                    content: "/media/images/cableSus_knot.png",
-                     altContent: "Graph showing runtime vs number of knot points",
-                    subtitle: "Graph of runtime vs number of knot points.",
-                 },
-                   {
-                    type: "image",
-                     content: "/media/images/cableSus_constraint.png",
-                     altContent: "Constraint violations across iterations",
-                      subtitle: "Constraint violations across iterations of IPOPT.",
-                     },
-             {
-               type: "text",
-                content: "Doubling the knot points led to an 8-fold increase in solver time, highlighting the computational complexity of this problem. Due to this limitation, a 100-knot problem formulation could not be solved as the Jacobian matrix grew to approximately 54 million elements."
-              },
-
-        ]
+      title: "Simulation Results and Observations",
+      navName: "Simulation Results",
+      navRef: "simulation-results",
+      content: [
+        {
+          type: "text",
+          content:
+            "We tested the framework on configurations from 4 to 9 quadrotors. The good news: IPOPT produces physically reasonable trajectories. The challenge: these problems are **highly non-convex** (many local minima), and the solver sometimes struggles to find the true optimum. Real-world robotics often means 'good enough' rather than mathematically perfect.",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Key Findings",
+        },
+        {
+          type: "text",
+          content:
+            "Qualitatively, the trajectories look right—drones spread out, maintain formation, and transport the load smoothly. Quantitatively, numerical convergence was difficult; the solver found feasible solutions but couldn't always reduce constraint violations to machine precision.",
+        },
+        {
+          type: "image",
+          content: "/media/images/cableSus_6_agent_plot.png",
+          altContent: "Position plot for a 6 agent configuration",
+          subtitle: "Position plot for a 6-agent configuration from start to goal.",
+        },
+        {
+          type: "text",
+          content:
+            "Solver time varied significantly with agent count and problem complexity. Early iterations converged well, but later iterations struggled to reach full convergence.",
+        },
+        {
+          type: "image",
+          content: "/media/images/cableSus_time.png",
+          altContent: "Time required for IPOPT solve for different number of agents",
+          subtitle: "Time required for IPOPT solve for different number of agents.",
+        },
+        {
+          type: "image",
+          content: "/media/images/cableSus_knot.png",
+          altContent: "Graph showing runtime vs number of knot points",
+          subtitle: "Graph of runtime vs number of knot points.",
+        },
+        {
+          type: "image",
+          content: "/media/images/cableSus_constraint.png",
+          altContent: "Constraint violations across iterations",
+          subtitle: "Constraint violations across iterations of IPOPT.",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Computational Scaling",
+        },
+        {
+          type: "text",
+          content:
+            "Doubling the knot points led to an **8-fold increase** in solver time, highlighting the computational complexity. A 100-knot formulation was infeasible—the Jacobian matrix grew to approximately **54 million elements**.",
+        },
+      ],
     },
-       {
-        title: "IPOPT Limitations and ALTRO as an Alternative",
-        navName: "Limitations & Alternatives",
-        navRef: "limitations-alternatives",
-        content: [
-          {
-            type: "text",
-            content:
-                "ALTRO (Augmented Lagrangian Trajectory Optimizer) is a trajectory optimization method that combines an augmented Lagrangian approach with an iterative LQR solver and an active-set method to achieve fast convergence for constrained problems. Research has shown that ALTRO performs competitively with direct collocation (DIRCOL) methods such as those using IPOPT. A key strength of ALTRO is its ability to be initialized with infeasible state trajectories, which is a major challenge for interior-point methods like IPOPT that typically require a feasible (or nearly feasible) starting point for robust convergence. This makes ALTRO a promising alternative for complex trajectory optimization problems like ours, especially when good initial guesses are difficult to obtain. Furthermore, ALTRO's constraint handling, particularly for problems involving obstacle avoidance or state-triggered constraints, can be more numerically stable and efficient than the barrier methods used in IPOPT.",
-          },
-            {
-              type: "text",
-                content: "During this project, we faced challenges with IPOPT's convergence, primarily due to the problem's high dimensionality, non-convexity, potential numerical instabilities from the dynamics and constraints, and the sensitivity to the initial guess. The lack of full convergence could be attributed to these factors, making exploration of solvers like ALTRO particularly relevant for future work."
-            },
+    {
+      title: "IPOPT Limitations and ALTRO as an Alternative",
+      navName: "Limitations & Alternatives",
+      navRef: "limitations-alternatives",
+      content: [
+        {
+          type: "text",
+          content:
+            "IPOPT is a general-purpose nonlinear optimizer—powerful but not specialized for robotics. **ALTRO** (Augmented Lagrangian Trajectory Optimizer) is designed specifically for trajectory problems and handles certain challenges better. If I were to continue this work, ALTRO would be the next thing to try.",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "ALTRO Advantages",
+        },
+        {
+          type: "text",
+          displayAs: "list",
+          content: [
+            "**Infeasible initialization** — can start from infeasible trajectories (vs. IPOPT needing near-feasible)",
+            "**Constraint handling** — more numerically stable for obstacle avoidance and state-triggered constraints",
+            "**Convergence** — less sensitive to initial guess quality",
           ],
         },
         {
-            title: "Conclusion and Future Work",
-            navName: "Conclusion",
-            navRef: "conclusion",
-            content: [
-                {
-                    type: "text",
-                    content:
-                        "This project successfully built upon previous work, outlining a methodology to handle slack in a multi-agent cable-suspended system, and explored the implementation of several techniques for this type of problem. Through this work we observed some challenges with IPOPT. A distributed approach to solving the problem using IPOPT could allow for increased scalability by reducing overall problem size and potential numerical instabilities. An implementation of the slack variable in a distributed manner could also improve adaptability in dynamic environments. Lastly, exploring ALTRO might address the initialization and convergence issues we faced in this work.",
-                },
-            ],
+          type: "text",
+          displayAs: "subtitle",
+          content: "Challenges with IPOPT",
         },
+        {
+          type: "text",
+          content:
+            "Our IPOPT implementation faced convergence challenges due to high dimensionality, non-convexity, numerical instabilities from dynamics/constraints, and sensitivity to initial guesses. These factors make ALTRO a promising alternative for future work.",
+        },
+      ],
+    },
+    {
+      title: "Conclusion and Future Work",
+      navName: "Conclusion",
+      navRef: "conclusion",
+      content: [
+        {
+          type: "text",
+          content:
+            "This project shows that cable slack—a real-world problem often ignored—can be handled systematically through hybrid control. The active set method provides a clean way to switch constraints based on physical state. While IPOPT has limitations for these highly non-convex problems, the framework itself is sound and could benefit from better solvers.",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Future Directions",
+        },
+        {
+          type: "text",
+          displayAs: "list",
+          content: [
+            "**Distributed optimization** — reduce problem size and improve scalability",
+            "**Distributed slack handling** — improve adaptability in dynamic environments",
+            "**ALTRO exploration** — address initialization and convergence challenges",
+          ],
+        },
+      ],
+    },
     ],
 };

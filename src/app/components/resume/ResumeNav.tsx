@@ -32,21 +32,21 @@ function ResumeNavBlurb() {
         router.push("/media/files/Lawrence_Onyango_Resume.pdf");
     }
   return (
-    <div className="flex flex-col space-y-2">
-      <h1 className="text-4xl font-bold">Lawrence Onyango</h1>
-      <h2 className="text-xl font-bold">
+    <div className="flex flex-col space-y-3 animate-fade-in">
+      <h1 className="text-4xl font-bold animate-gradient-wave bg-gradient-to-l from-[#4FA3E8] via-white to-white bg-[length:200%_100%] bg-clip-text text-transparent">Lawrence Onyango</h1>
+      <h2 className="text-xl font-bold text-gray-200">
         Software Engineer & Future Roboticist
       </h2>
-      <p className="text-sm">
+      <p className="text-sm text-gray-400">
         I design intuitive, software-driven solutions that bring engineering
         principles to life in the digital world.
       </p>
-      <div className="flex flex-row justify-between">
-        <div></div>
-        <button onClick={redirectResume} className="text-sm italic underline transition duration-300 ease-in-out hover:text-textHover">
-          View Full Resume
-        </button>
-      </div>
+      <button 
+        onClick={redirectResume} 
+        className="self-end mt-2 px-4 py-2 text-sm text-gray-300 border border-gray-600 rounded-full transition-all duration-300 ease-in-out hover:border-[#4FA3E8] hover:text-[#4FA3E8] hover:shadow-md hover:shadow-[#4FA3E8]/20"
+      >
+        View Full Resume →
+      </button>
     </div>
   );
 }
@@ -60,14 +60,17 @@ export function ResumeNav(props: {
       <div className="flex flex-col space-y-6">
         <ResumeNavBlurb />
         {props.resumeSections.map((section, index) => (
-          <ResumeNavItem
-            isActive={props.activeSection === section.id}
-            key={index}
-            {...section}
-          />
+          <div key={index} className="animate-fade-in" style={{ animationDelay: `${(index + 1) * 150}ms`, animationFillMode: 'backwards' }}>
+            <ResumeNavItem
+              isActive={props.activeSection === section.id}
+              {...section}
+            />
+          </div>
         ))}
       </div>
-      <Socials />
+      <div className="animate-fade-in" style={{ animationDelay: '500ms', animationFillMode: 'backwards' }}>
+        <Socials />
+      </div>
     </div>
   );
 }

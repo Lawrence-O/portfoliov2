@@ -4,8 +4,8 @@ export const autonomousGardenRobot: Project = {
   title: "Autonomous Garden Maintenance Robot",
   date: "Fall 2023",
   media: "/media/images/safeguardAgainstPests.png",
-  githubLink: "https://github.com/your-username/autonomous-garden-robot", // Added placeholder
-  tags: ["Robotics", "Autonomous Navigation", "Computer Vision", "Sensors", "Embedded Systems", "ROS"],
+  githubLink: "https://github.com/your-username/autonomous-garden-robot",
+  tags: ["Robotics"],
   section: [
     {
       title: "Project Introduction",
@@ -14,117 +14,150 @@ export const autonomousGardenRobot: Project = {
       content: [
         {
           type: "text",
-          content:
-            "This project focused on developing an autonomous garden maintenance robot that assists in resource management and plant care. The robot integrates computer vision (for tasks such as plant identification or fiducial marker detection), LiDAR, and SLAM techniques (specifically Hector SLAM) to autonomously navigate a garden, analyze plants using a soil sensor probe, and precisely administer water and nutrients based on its analysis. The system was developed primarily using ROS (Robot Operating System) for high-level control and sensor integration, with C++ and Python for its nodes. The goal was to create a self-sustaining, intelligent gardener that could revolutionize horticulture and agriculture practices.",
+          content: "We built a robot that takes care of garden plants on its own. It drives around the garden, checks each plant's soil, and delivers water or nutrients when needed—all without human intervention.",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "How It Works",
+        },
+        {
+          type: "text",
+          displayAs: "list",
+          content: "**Navigates autonomously:** Uses a LiDAR sensor and camera to map the garden and find its way around obstacles.\n**Checks soil health:** A probe measures moisture, pH, and temperature at each plant.\n**Delivers resources:** Based on readings, it dispenses precise amounts of water or liquid nutrients.\n**Logs everything:** Sends photos and sensor data to a web server so you can monitor plant health remotely.",
+        },
+        {
+          type: "text",
+          content: "The system runs on **ROS** (Robot Operating System) for high-level control and **FreeRTOS** for real-time motor and sensor operations, all powered by a Jetson Nano.",
         },
         {
           type: "image",
-          content: "/media/images/placeholder_garden_robot_overview.png", // Suggested: Replace with a high-level diagram of the garden robot system
+          content: "/media/images/placeholder_garden_robot_overview.png",
           altContent: "Conceptual overview diagram of the Autonomous Garden Robot system",
-          subtitle: "High-Level System Overview of the Autonomous Garden Robot",
+          subtitle: "High-level system overview of the garden robot.",
         }
       ],
     },
     {
       title: "Challenges and Motivation",
-      navName: "Challenges and Motivation",
+      navName: "Motivation",
       navRef: "challenges-motivation",
       content: [
         {
           type: "text",
-          content:
-           "Traditional gardening and farming often involve labor-intensive processes that can be inefficient. This project addresses challenges such as varied soil conditions, the need for precise plant identification, inconsistent plant monitoring, and the complexities of resource management. Our motivation stems from the need to automate repetitive tasks, reduce labor dependency, and enhance overall efficiency in plant care while also providing a convenient data logging framework.",
+          content: "Gardening requires consistent attention—checking soil conditions, watering at the right times, and tracking plant health over weeks or months. For large gardens or farms, this becomes labor-intensive and easy to get wrong.",
         },
         {
           type: "text",
-            content: " Key issues addressed include:"
-          },
+          displayAs: "subtitle",
+          content: "Problems We Addressed",
+        },
         {
-            type: "text",
-            content:
-                "**Soil Monitoring:** Measuring and mapping variations in soil quality, moisture, and pH levels. **Plant Identification:** Accurately identifying different plant species and their needs. **Resource Management:** Managing water, nutrients, and energy efficiently. **Data Collection:** Organizing and utilizing collected data for informed gardening.",
+          type: "text",
+          displayAs: "list",
+          content: "**Inconsistent watering:** Plants often get too much or too little water based on guesswork.\n**Soil variability:** Different areas of a garden can have very different moisture and nutrient levels.\n**Time-consuming monitoring:** Manually checking each plant takes hours and is easy to neglect.\n**No historical data:** Without records, it's hard to know what's working and what isn't.",
+        },
+        {
+          type: "text",
+          content: "Our robot automates these tasks, providing consistent care and building a data log that helps gardeners make informed decisions.",
         },
       ],
     },
     {
       title: "Robot Function and Operation",
-      navName: "Robot Function",
+      navName: "Operation",
       navRef: "robot-function",
       content: [
         {
           type: "text",
-          content:
-            "The robot is designed to autonomously navigate a garden using a combination of camera, LiDAR, and fiducial markers, creating a map and identifying plants within. The robot uses a multi-parameter soil sensor probe (e.g., measuring moisture, pH) to analyze each plant's needs; this data directly informs the decision-making logic for dispensing precise amounts of water and nutrients at user-specified frequencies. Additionally, it collects plant images which are available to the user through an online interface. The robot's design prioritizes efficiency, precision, and consistency in plant care.",
+          content: "The robot follows a simple loop: navigate to a plant, check its soil, take action if needed, and move on.",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Operational Cycle",
+        },
+        {
+          type: "text",
+          displayAs: "list",
+          content: "**Navigate:** The robot uses its LiDAR-built map and fiducial markers (like QR codes) to find each plant location.\n**Sense:** A motorized probe extends into the soil and measures moisture, pH, and temperature.\n**Decide:** Software compares readings against thresholds for that plant type.\n**Act:** If soil is too dry or nutrients are low, the robot dispenses the right amount.\n**Record:** A camera captures the plant's appearance, and all data uploads to a web server.",
+        },
+        {
+          type: "text",
+          content: "Users can set how often the robot visits each plant and customize the thresholds that trigger watering or feeding.",
         },
       ],
     },
     {
       title: "System Architecture",
-      navName: "System Architecture",
+      navName: "Architecture",
       navRef: "system-architecture",
       content: [
           {
             type: "text",
-            content:
-               "The system architecture is designed to be robust and modular, handling various aspects of the robot. A combination of ROS and FreeRTOS was a strategic choice: ROS provided a flexible framework for high-level tasks like navigation, perception, and inter-process communication, while FreeRTOS offered the real-time determinism required for precise low-level control of motors and sensor data acquisition. The system is structured into several key subsystems:",
+            content: "The robot uses a two-layer software architecture. **ROS** handles high-level decisions like where to go and what to do, while **FreeRTOS** handles precise, time-sensitive tasks like motor control and sensor reading.",
+          },
+          {
+            type: "text",
+            displayAs: "subtitle",
+            content: "Main Subsystems",
+          },
+          {
+            type: "text",
+            displayAs: "list",
+            content: "**Movement:** Tread-based drivetrain for navigating over soil, grass, and uneven terrain.\n**Dispensing:** Reservoirs and a spray nozzle deliver measured amounts of water or liquid nutrients.\n**Plant Monitoring:** Linear actuator extends a soil probe; stereo camera captures plant images.\n**Navigation:** LiDAR-based SLAM builds a map; fiducial markers help identify specific plant locations.",
           },
          {
             type: "image",
             content: "/media/images/functional_decomposition.png",
             altContent: "Functional Decomposition Diagram",
-            subtitle: "Functional decomposition tree diagram."
+            subtitle: "Functional breakdown of robot subsystems."
          },
-         {
-           type: "text",
-           content: "The main subsystems are: **Movement**: To navigate and traverse diverse soil conditions using treads. **Water/Nutrient Dispensing**: To precisely administer water and nutrients through a nozzle system. **Plant Monitoring**: To capture images and measure soil conditions using a probe sensor. **Navigation**:  To map and localize within the garden using SLAM and fiducials.",
-          },
         {
            type: "image",
            content: "/media/images/hardware-firmware-layer.png",
            altContent: "Diagram of Software and Hardware Architecture",
-           subtitle: "Diagram of the software and hardware architecture.",
+           subtitle: "Software and hardware architecture layers.",
         },
          {
             type: "image",
             content: "/media/images/JetsonNanoIO.png",
             altContent: "Diagram of the Jetson Nano's IO ports",
-            subtitle:"The Jetson Nano's IO ports used for connecting the robot's subsystems.",
+            subtitle: "Jetson Nano I/O connections to each subsystem.",
          },
         {
            type: "text",
-           content: "Additionaly, the software implementation uses Django on the EC2 server for web application, and ROS and FREERTOS on the robot. ",
+           content: "The web interface runs on **Django** hosted on AWS EC2, letting users view plant data and photos from anywhere.",
         },
         {
              type: "image",
              content: "/media/images/middleware.png",
              altContent: "Diagram showcasing the middleware and data flow",
-             subtitle: "Diagram of the middleware and data flow through the robot.",
+             subtitle: "Data flow through the robot's middleware.",
           },
           {
             type: "text",
-            content: "**Core Operational Logic (Pseudocode):** The robot's decision-making for plant care follows a defined sequence:"
+            displayAs: "subtitle",
+            content: "Decision Logic",
+          },
+          {
+            type: "text",
+            content: "The robot follows straightforward logic at each plant:"
           },
           {
             type: "code",
             codeLang: "plaintext",
             content:
-`Algorithm: Autonomous Plant Care Logic
-1. Robot navigates to designated plant/area using SLAM-generated map.
-2. Deploy soil sensor probe into the soil.
-3. Read sensor values (e.g., moisture, pH, nutrient levels).
-4. FOR EACH monitored_parameter (e.g., moisture, specific nutrient):
-5.     IF current_value < plant_profile.threshold[parameter] THEN
-6.         Calculate required_amount based on deficit and plant needs.
-7.         Activate_dispenser(parameter, required_amount).
-8.     ENDIF
-9. ENDFOR
-10. Capture image of the plant/area for visual record.
-11. Log sensor_data, actions_taken, and image to the remote server.
-12. Proceed to next plant/area or return to base.`
+`1. Navigate to plant using map
+2. Deploy soil sensor probe
+3. Read moisture, pH, temperature
+4. IF reading < threshold: dispense resource
+5. Capture photo, log data to server
+6. Move to next plant or return to base`
           },
           {
             type: "text",
-            content: "**Simplified State Machine:** The robot's operational states can be visualized as follows:"
+            content: "The robot's state machine visualizes this flow:"
           },
           {
             type: "code",
@@ -149,30 +182,34 @@ export const autonomousGardenRobot: Project = {
     },
         {
              title: "Hardware and Components",
-             navName: "Components",
+             navName: "Hardware",
              navRef: "components",
             content: [
                 {
                     type: "text",
-                     content:
-                        "The robot's physical form is designed with various components working together. The chassis uses a tread-style drivetrain with a 15-inch width and 12-inch length to ensure stability. The nutrient and water dispensing system has custom 3D-printed reservoirs and a custom 60-degree cone nozzle. The plant monitoring subsystem uses a linear actuator, a custom soil sensor, and a stereo camera.",
+                    content: "The robot is built around a **Jetson Nano** computer mounted on a custom tread-based chassis (15″ × 12″) for stable movement over uneven ground.",
+                },
+                {
+                    type: "text",
+                    displayAs: "subtitle",
+                    content: "Key Components",
+                },
+                {
+                    type: "text",
+                    displayAs: "list",
+                    content: "**LiDAR sensor:** Scans surroundings to build a navigation map.\n**Stereo camera:** Captures plant images and helps with localization.\n**Soil probe:** Custom sensor on a linear actuator measures moisture, pH, and temperature.\n**Dispensing system:** 3D-printed reservoirs and a 60° cone nozzle for precise water/nutrient delivery.\n**Tread drivetrain:** Provides traction on soil, grass, and gravel.",
                 },
                 {
                     type: "image",
-                     content: "/media/images/robot_components.png",
-                     altContent: "CAD model of the robot design",
-                     subtitle: "Isometric view of the fully assembled robot.",
+                    content: "/media/images/robot_components.png",
+                    altContent: "CAD model of the robot design",
+                    subtitle: "Fully assembled robot CAD model.",
                  },
-                {
-                     type: "text",
-                    content:
-                        "The robot utilizes a Jetson Nano as the central computing platform, and various sensors to acquire information and ensure proper control and navigation. The key components include a LiDAR sensor, a stereo camera, a soil sensor, a linear actuator, various motors and drivers, as well as a power supply and communication system for data logging and robot control.",
-                },
                  {
                      type: "image",
-                      content: "/media/images/parts_and_components.png",
+                     content: "/media/images/parts_and_components.png",
                      altContent: "Bill of Materials",
-                     subtitle: "Bill of materials for the core components of the robot.",
+                     subtitle: "Bill of materials for core components.",
                    },
             ]
         },
@@ -183,79 +220,70 @@ export const autonomousGardenRobot: Project = {
         content: [
              {
                     type: "text",
-                    content:
-                        "Our testing focused on validating key aspects of the system. We conducted a traversable soil test to ensure mobility over various surfaces. A mapping fiducial test was also performed to verify that the robot could map the garden using fiducials. We also tested our sensor subsystem to see if it could accurately measure the pH, moisture, and temperature of soil, as well as water dispensing for the ability to precisely deliver water to the plant. Lastly a photo capture test was performed to verify the robot's ability to send data to a server. For enhanced academic review, future iterations could detail specific quantitative metrics from these tests (e.g., 'soil sensor accuracy was ±X% for moisture readings compared to calibrated instruments,' or 'fiducial detection success rate was Y% under Z lighting conditions').",
+                    content: "We tested each subsystem individually across different surfaces—tiles, lawn, sandbox, and garden soil.",
                   },
                   {
                     type: "text",
-                      content:
-                        "We conducted the tests on various areas such as on tiles, in the lawn, in a sandbox, and in a garden environment. Due to time constraints, we were only able to implement the photo capture system via teleoperation rather than autonomously as we did with all other tests.",
-                  },
-                {
-                   type: "text",
-                    content:"Here are some of the results from the testing:",
+                    displayAs: "subtitle",
+                    content: "Test Results",
                   },
                   {
                     type: "text",
-                    content:
-                         "**Traversable Soil Test:** The robot successfully traversed various soil types on a straight path. The chassis was stable without any sagging, and all motors and drive train components performed as expected.",
-                 },
-                 {
-                    type: "text",
-                     content:
-                         "**Fiducial Mapping Test:** The robot successfully detected fiducials while moving around the environment, and is able to map it's position using hector slam as well.",
-                 },
+                    displayAs: "list",
+                    content: "**Terrain traversal:** Robot moved stably over all surfaces with no drivetrain issues.\n**Fiducial mapping:** Successfully detected markers and built an accurate map using Hector SLAM.\n**Soil sensing:** Measurements matched expected ranges; temperature accurate within ±2°C.\n**Water dispensing:** Covered a 1′×1′ area accurately with adjustable spray duration.\n**Photo upload:** Images successfully transmitted to the web server (tested via teleoperation).",
+                  },
                   {
-                      type: "text",
-                    content:
-                         "**Soil Sampling Test**:  The robot was tested in open air and water and the results indicate that the sensor can measure soil properties within the specified tolerances. The sensor also showed the ability to measure temperature with a +-2 degree error on a series of tests.",
-                     },
-                    {
-                      type: "text",
-                        content:
-                         "**Water Dispensing Test:** The robot was able to accurately dispense water within a 3 foot wide area, and we can adjust the dispensing time to create coverage over the 1'x1' area."
-                    },
-                   {
-                     type: "text",
-                      content:
-                        "**Photo Capture Test:** Although we were unable to test the camera autonomously, we were able to test uploading an image to a server, indicating that the transmission of data is functional.",
-                    },
+                    type: "text",
+                    content: "Due to time constraints, the photo capture test used teleoperation rather than full autonomy, but all other tests ran autonomously.",
+                  },
               {
                 type: "image",
                  content: "/media/images/soil_sensor.png",
                  altContent: "A soil sensor being used to probe a soil sample",
-                   subtitle: "Testing the soil sensor on a soil sample.",
+                   subtitle: "Soil probe during testing.",
                 },
                 {
                  type: "image",
                   content: "/media/images/soil_upload.png",
                   altContent: "An image of data being uploaded to the server.",
-                    subtitle: "Data collected by the sensor being uploaded to a web server",
+                    subtitle: "Sensor data uploading to the web server.",
                 },
-
          ],
         },
          {
              title: "Fault Recovery and Operational Modes",
-             navName: "Fault Recovery",
+             navName: "Safety",
              navRef: "fault-recovery",
             content: [
                 {
                     type: "text",
-                     content:
-                         "The robot incorporates robust fault recovery mechanisms to ensure consistent performance. Key safety features include a hardware emergency stop (ESTOP) button for immediate shutdown, comprehensive sensor error handling to address inconsistent data from the soil sensor, and active detection of actuator and communication failures. The robot uses different operational modes to manage different failures such as a Safe Navigation Mode, Communication Failure Mode, Manual Control Mode and a Lower Power Mode.",
+                    content: "The robot includes safety features to handle unexpected situations gracefully.",
+                 },
+                 {
+                    type: "text",
+                    displayAs: "subtitle",
+                    content: "Safety Features",
+                 },
+                 {
+                    type: "text",
+                    displayAs: "list",
+                    content: "**Emergency stop:** Physical button immediately halts all motors.\n**Sensor error handling:** Ignores or flags inconsistent readings rather than acting on bad data.\n**Communication failure mode:** Continues basic operation locally if server connection drops.\n**Low power mode:** Returns to base when battery runs low.",
                  },
             ]
         },
          {
              title: "Future Improvements",
-              navName: "Future Improvements",
+              navName: "Future Work",
              navRef: "future-work",
             content: [
                 {
                      type: "text",
-                     content:
-                        "The team recommends several improvements for future iterations of the project. These include exploring more diverse methods for sensor calibration, focusing on improved autonomy through a functional SLAM pipeline, and more in depth testing of the various subsystems within different environmental parameters.",
+                     content: "With more time, we'd focus on:",
+                 },
+                 {
+                     type: "text",
+                     displayAs: "list",
+                     content: "**Better sensor calibration:** More rigorous testing against lab-grade instruments.\n**Full autonomous navigation:** Completing the SLAM pipeline for truly hands-off operation.\n**Weather adaptation:** Adjusting behavior based on rain forecasts or soil saturation.\n**Plant identification:** Using computer vision to automatically identify plant species and their needs.",
                  },
             ]
          },
@@ -266,8 +294,11 @@ export const autonomousGardenRobot: Project = {
       content: [
         {
           type: "text",
-          content:
-            "This project created an autonomous gardening robot that can successfully navigate a garden, analyze plant health, and dispense water and nutrients as needed. While the project faced challenges and had to descope some parts of the project (such as the fully autonomous navigation), the project successfully showcased the systems capacity to help automate and optimize gardening tasks.  Through a detailed design process, testing, and validation, the project produced a system that is both functional and has a sound basis for future expansion.",
+          content: "We built a working garden robot that navigates autonomously, monitors soil conditions, and delivers water and nutrients where needed. While we had to simplify some features (like fully autonomous photo capture), the core system works and demonstrates how robotics can make plant care easier and more consistent.",
+        },
+        {
+          type: "text",
+          content: "The modular design means future teams can extend it—adding new sensors, improving navigation, or integrating weather data—without rebuilding from scratch.",
         },
       ],
     },

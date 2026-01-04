@@ -9,6 +9,7 @@ import { multiRobotFrontierExploration } from "@/app/components/data/projects/mu
 import {optimalControlHW2} from "@/app/components/data/projects/optimalControlHw2";
 import { optimalControlHW3 } from "@/app/components/data/projects/optimalControlHw3";
 import { optimalControlHW4 } from "@/app/components/data/projects/optimalControlHw4";
+import { portfolioWebsite } from "@/app/components/data/projects/portfolio";
 import { ultimateQuiz } from "@/app/components/data/projects/quizGame";
 import { safeguardAgainstPests } from "@/app/components/data/projects/sap";
 import { symbolicPlanner } from "@/app/components/data/projects/symbolicPlanner";
@@ -19,8 +20,8 @@ export const projectPagesDict: { [slug: string]: Project } = {
   "sampling-based-motion-planners": motionPlanner,
   "symbolic-planner": symbolicPlanner,
   "multi-robot-frontier-exploration": multiRobotFrontierExploration,
-  "robotic-sentry-safe-guard-against-pests": safeguardAgainstPests,
-  "the-ultimate-quiz-ruler-edition": ultimateQuiz,
+  "safeguard-against-pests-sap": safeguardAgainstPests,
+  "the-ultimate-quiz": ultimateQuiz,
   "grip-assistive-glove": gripAssistiveGlove,
   "habitat-airlock-linkage-system": habitatAirlockLinkage,
   "optimal-control-of-linear-systems-lqr-tvlqr-and-mpc":optimalControlHW2,
@@ -28,5 +29,6 @@ export const projectPagesDict: { [slug: string]: Project } = {
   "jenga-building-robotic-arm": roboticArmControl,
   "trajectory-generation-with-iterative-learning-and-hybrid-control": optimalControlHW4,
   "distributed-quadrotors-transporting-a-load":cableSuspendedLoads,
-  "autonomous-garden-maintenance-robot":autonomousGardenRobot
+  "autonomous-garden-maintenance-robot":autonomousGardenRobot,
+  "portfolio-website": portfolioWebsite
 };

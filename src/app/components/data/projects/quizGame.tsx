@@ -5,7 +5,7 @@ export const ultimateQuiz: Project = {
   date: "Spring 2021",
   media: "/media/videos/quizGame.mp4",
   githubLink: "https://github.com/your-username/ultimate-quiz-game",
-  tags: ["Web Scraping", "Game Development", "Algorithms", "Python", "Object-Oriented Design"],
+  tags: ["Web Scraping", "Game Development", "Algorithms", "Python"],
   section: [
     {
       title: "Project Overview",
@@ -14,135 +14,153 @@ export const ultimateQuiz: Project = {
       content: [
         {
           type: "text",
+          content:
+            "The Ultimate Quiz is a trivia game about historical rulers that generates questions by scraping Wikipedia. Instead of using a fixed question bank, the game pulls real data—birth dates, death dates, reign periods, successors—and turns it into multiple-choice questions on the fly.",
+        },
+        {
+          type: "text",
+          content:
+            "The game also tracks how well you're doing and adapts accordingly. Questions you get wrong come back more often, while ones you've mastered appear less frequently. This is based on spaced repetition techniques used in flashcard apps.",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Key Features",
+        },
+        {
+          type: "text",
+          displayAs: "list",
           content: [
-            "The Ultimate Quiz is a dynamic and educational quiz game that was created through an exploration of web scraping and game design principles. This project uniquely merges real-time data acquisition, specifically from historical information about rulers, with engaging gameplay.",
-            "Rather than relying on static question banks, the game dynamically generates its content through web scraping techniques, thereby offering a unique and personalized learning experience for each user. A key element is the integration of a personalized mastery system, which adapts to the player's learning curve and ensures a consistently challenging and effective learning process through spaced repetition."
-          ]
+            "**Dynamic question generation** — questions created from scraped Wikipedia data",
+            "**Adaptive difficulty** — tracks performance and adjusts question frequency",
+            "**Spaced repetition** — reinforces learning by revisiting missed questions",
+            "**Visual learning** — displays ruler portraits fetched from Wikipedia",
+          ],
         },
       ],
     },
     {
-      title: "Dynamic Game Structure and Data Handling",
+      title: "Web Scraping for Ruler Data",
       navName: "Ruler Data",
       navRef: "game-structure",
       content: [
         {
           type: "text",
+          content:
+            "The game uses BeautifulSoup (a Python library) to scrape Wikipedia pages for historical rulers. It extracts structured information like birth/death dates, reign periods, and successor names, then stores this in a `Ruler` class.",
+        },
+        {
+          type: "text",
+          content:
+            "This object-oriented approach keeps the scraping logic separate from the game mechanics. Adding a new ruler just means pointing the scraper at a new Wikipedia page—the rest of the system handles it automatically.",
+        },
+        {
+          type: "text",
+          displayAs: "list",
           content: [
-            "At the heart of The Ultimate Quiz lies a sophisticated data structure centered around historical rulers. The game utilizes web scraping techniques with BeautifulSoup to extract specific details from Wikipedia pages, including crucial information such as birth and death dates, reign details, and successors. This scraped data is then used to power dynamic question generation, ensuring each game is both unique and educational.",
-            "The 'Ruler' class plays a pivotal role in organizing this data. By encapsulating all details of a ruler—including their name, associated Wikipedia URL, and scraped information—the game becomes scalable and extensible, as adding new rulers is seamless. Additionally, the class is responsible for extracting the ruler's image, which greatly enhances visual engagement. This object-oriented approach isolates the web scraping logic from the core game mechanics, providing a clear separation of concerns that greatly improves the maintainability and readability of the code."
-          ]
-        }
+            "**BeautifulSoup** — parses HTML to extract structured data",
+            "**Ruler class** — encapsulates name, dates, reign info, and image URL",
+            "**Separation of concerns** — scraping logic isolated from game logic",
+          ],
+        },
       ],
     },
-     {
-      title: "Personalized and Adaptive Mastery System", // Merged and rephrased title
+    {
+      title: "Adaptive Mastery System",
       navName: "Mastery System",
       navRef: "mastery-system",
       content: [
         {
           type: "text",
-          content: [
-           "To ensure that The Ultimate Quiz is both educational and enjoyable, a personalized mastery system, inspired by the Leitner System and SuperMemo algorithms, was implemented. This system is fundamental to managing the player's learning progression. It actively tracks player performance on each question, adjusting the frequency of questions accordingly: correctly answered questions appear less often, while incorrect answers are presented more frequently to reinforce learning.",
-           "The 'MasterySystem' class is the core of this adaptive learning experience. It organizes questions into different 'levels' representing stages of mastery. Key methods like 'updateStats' and 'updateLevel' dynamically adjust this progression. The 'calculateDifficulty' method further refines the challenge based on performance history, and a custom linear regression algorithm can predict future performance on recycled questions. These features combine to create a unique learning path for each player, promoting continuous learning and engagement."
-          ]
+          content:
+            "The mastery system is inspired by spaced repetition algorithms like the Leitner System and SuperMemo. The basic idea: questions you answer correctly move to higher 'levels' and appear less often, while questions you miss drop back down and come up more frequently.",
+        },
+        {
+          type: "text",
+          content:
+            "The system also tracks how long you take to answer. Fast correct answers indicate strong recall, while slow answers (even if correct) suggest the material isn't fully learned yet. A simple linear regression predicts future performance when recycling old questions.",
         },
         {
           type: "code",
           codeLang: "python",
-          content: `
-class MasterySystem(object):
+          content: `class MasterySystem:
     def __init__(self, numLevels, listQuestions):
-        self.numLevels = numLevels
-        self.listQuestions = listQuestions # All available MultipleChoiceQuestion objects
-        # self.stats: Tracks correct/incorrect counts per question type
-        # self.appearedQTypes: Tracks appearance count per question type
-        # self.levels: A 2D list representing mastery boxes/levels, initially populated
-        # self.oldQuestions: Logs past questions and correctness
-        # self.recycleQ: Flag indicating if questions are being recycled
-        # ... (initialization of these attributes) ...
-
-    def calculateDifficulty(self, mcQuestion, correct, currRetrivalTime):
-        # Adjusts mcQuestion.difficulty
-        # If not self.recycleQ:
-        #   difficulty decreases if correct, increases if incorrect.
-        # Else (recycling questions, linear regression is used):
-        #   anticipatedTime = self.linearRegression(mcQuestion.getRetrivalTime())
-        #   anticipatedDifficulty = self.linearRegression(mcQuestion.getPastDifficulties())
-        #   Difficulty adjusted based on comparison of currRetrivalTime to anticipatedTime,
-        #   and weighted by anticipatedDifficulty.
-        # ...
-        pass
-
-    def updateStats(self, mcQuestion, pickedAnswer, correct, retrivalTime):
-        # Update self.stats for the mcQuestion's type
-        # mcQuestion.setDifficulty(self.calculateDifficulty(...))
-        # mcQuestion.addRetrivalTime(retrivalTime), mcQuestion.addPastDifficulties(...)
-        # Log to self.oldQuestions
-        # self.updateLevel(mcQuestion, correct, retrivalTime)
-        # ...
-        pass
-
-    def updateLevel(self, mcQuestion, correct, currRetrivalTime):
-        # Finds current level of mcQuestion.getQuestion().getQuestionType()
-        # If not self.recycleQ:
-        #   If correct, move type to next higher level (or stay in highest).
-        #   If incorrect, move type to next lower level (or stay in lowest).
-        # Else (recycling, uses linear regression from past difficulties):
-        #   dRow (change in level) determined by regression slope.
-        #   Move type by dRow (up if correct, down if incorrect).
-        # ...
-        pass
-
-    def linearRegression(self, listYPoints):
-        # Performs linear regression on listYPoints (e.g., past retrieval times or difficulties)
-        # Returns: slope (m), anticipated_next_y_value
-        # ... (implementation as shown previously) ...
-        pass
-
-    def getNextQuestion(self):
-        # If self.listQuestions is empty, trigger recycling logic (self.recycleSelfQuestions)
-        # If not self.recycleQ:
-        #   nextQType = self.findNextQType() (selects based on appearance count, difficulty)
-        #   Find and return a question of nextQType from self.listQuestions.
-        # Else (recycling):
-        #   nextQType = self.findQTypeInLevels() (selects from levels)
-        #   nextQuestion = self.findRecycledQuestion(nextQType) (uses linear regression to pick)
-        #   Return nextQuestion.
-        # ...
-        pass
-`,
-          subtitle: "Core logic of the MasterySystem class (simplified)",
+        self.levels = [[] for _ in range(numLevels)]  # Mastery boxes
+        self.stats = {}   # Tracks correct/incorrect per question type
+        
+    def updateLevel(self, question, correct):
+        # Move question up a level if correct, down if incorrect
+        currentLevel = self.findLevel(question)
+        if correct:
+            newLevel = min(currentLevel + 1, self.numLevels - 1)
+        else:
+            newLevel = max(currentLevel - 1, 0)
+        self.moveToLevel(question, newLevel)`,
+          subtitle: "Core mastery system logic",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "How It Works",
+        },
+        {
+          type: "text",
+          displayAs: "list",
+          content: [
+            "**Level-based boxes** — questions organized by mastery level (like Leitner flashcards)",
+            "**Performance tracking** — records correct/incorrect and response time",
+            "**Difficulty adjustment** — question difficulty updates based on history",
+            "**Linear regression** — predicts performance when recycling old questions",
+          ],
         },
       ],
     },
     {
-      title: "Dynamic Question Generation",
+      title: "Question Generation",
       navName: "Question System",
       navRef: "question-generation",
-       content: [
+      content: [
         {
           type: "text",
+          content:
+            "Questions are generated dynamically from the scraped ruler data. Each question pulls information from one ruler (e.g., 'When did Queen Victoria die?') and generates wrong answers using data from other rulers, making it harder to guess based on familiarity.",
+        },
+        {
+          type: "text",
+          content:
+            "The system tracks response time along with correctness. A fast correct answer lowers the question's difficulty, while a slow answer (even if correct) keeps it at a higher difficulty level. This helps distinguish between genuine knowledge and lucky guesses.",
+        },
+        {
+          type: "text",
+          displayAs: "list",
           content: [
-            "The game’s question system was designed to be highly dynamic, with each question generated from ruler data and presented in an engaging multiple-choice format. This approach prevents predictability and ensures accessibility. The 'MultipleChoiceQuestion' class is vital, creating varied answer choices using data from different rulers to prevent guessing based on familiarity with a single name.",
-            "The system also tracks retrieval time, dynamically adjusting question difficulty: correct and rapid responses lower difficulty, while incorrect or slow answers increase it, personalizing the challenge. Each question, managed by the 'Question' class (holding text, answer, and ruler data), uses a randomization algorithm in 'createMultipleChoice' for answer generation and 'createResultAnswers' to vary the correct answer's position, ensuring an unpredictable yet rewarding experience."
-          ]
-        }
+            "**Multiple choice format** — one correct answer from ruler data, three distractors from other rulers",
+            "**Randomized answer position** — correct answer placed randomly among choices",
+            "**Response time tracking** — faster responses indicate stronger recall",
+          ],
+        },
       ],
     },
     {
-      title: "User Interface and Key Features",
+      title: "User Interface",
       navName: "UI Features",
       navRef: "user-interface",
       content: [
         {
           type: "text",
+          content:
+            "The game includes several features to help players track their progress and understand the mechanics.",
+        },
+        {
+          type: "text",
+          displayAs: "list",
           content: [
-            "To enhance user experience, several key features were implemented. A Stats Screen provides a comprehensive overview of player progress, highlighting strengths and areas for improvement. The Help Screen offers guidance on game mechanics, aiding new users.",
-            "Furthermore, the game dynamically fetches and displays images of each ruler from Wikipedia, enriching gameplay with a visual learning dimension. Robust error handling, crucial for web scraping, ensures stability. A Linear Regression model dynamically adjusts difficulty levels based on performance, keeping the game challenging yet attainable. These features combine to create a reliable and user-friendly learning tool."
+            "**Stats screen** — shows performance breakdown by question type",
+            "**Help screen** — explains game mechanics and scoring",
+            "**Ruler portraits** — images fetched from Wikipedia for visual learning",
+            "**Error handling** — graceful fallbacks when scraping fails",
           ],
-          displayAs: "list" // Changed to list for better readability of features
-        }
+        },
       ],
     },
     {
@@ -152,10 +170,8 @@ class MasterySystem(object):
       content: [
         {
           type: "text",
-          content: [
-            "Developing The Ultimate Quiz provided valuable experience in web scraping, data parsing, and game development. The project resulted in an interactive tool that effectively combines educational content with an engaging gaming framework.",
-            "This endeavor demonstrates the power of complex algorithms in creating personalized learning experiences and illustrates how techniques from diverse fields can merge to produce effective and engaging educational applications."
-          ]
+          content:
+            "This project combined web scraping, data parsing, and adaptive learning algorithms into an interactive quiz game. The spaced repetition system provides a practical application of learning science principles, while the dynamic question generation ensures varied content without manual question authoring.",
         },
       ],
     },

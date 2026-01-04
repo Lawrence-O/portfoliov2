@@ -40,9 +40,9 @@ export function ProjectNavScroll(props: {
   }, [props.currentSelection, props.navItems]);
 
   return (
-    <div className="absolute left-0 w-1 h-full bg-secondary rounded-3xl overflow-clip">
+    <div className="absolute left-0 w-1 h-full bg-gray-700 rounded-3xl overflow-clip">
       <div
-        className="bg-contrast w-1 cursor-pointer rounded-3xl transition-transform duration-300 ease-in-out"
+        className="bg-[#4FA3E8] w-1 cursor-pointer rounded-3xl transition-transform duration-300 ease-in-out shadow-[0_0_8px_rgba(79,163,232,0.6)]"
         style={{
           height: `${scrollbarHeight}px`,
           transform: `translateY(${scrollbarTop}px)`,

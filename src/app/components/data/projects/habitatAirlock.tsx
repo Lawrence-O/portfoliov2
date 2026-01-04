@@ -1,141 +1,210 @@
 import { Project } from "@/app/components/project/interfaces";
 
 export const habitatAirlockLinkage: Project = {
-    title: "Habitat's Airlock Linkage System",
-    date: "Engineering Design I: Skills and Methods - Spring 2023",
-    media: "/media/videos/habitat_linkage.mp4",
-    githubLink: "https://github.com/your-username/habitat-airlock-linkage",
-    tags: ["Mechanical Design", "Linkage System", "CAD", "FEA", "Prototyping", "Optimization"],
-    section: [
+  title: "Habitat Airlock Linkage System",
+  subtitle: "Optimized four-bar linkage for rapid button actuation",
+  date: "Spring 2023",
+  media: "/media/videos/habitat_linkage.mp4",
+  tags: ["Mechanical Design", "Linkage Systems", "CAD", "FEA", "Optimization"],
+  section: [
+    {
+      title: "Project Overview",
+      navName: "Overview",
+      navRef: "project-overview",
+      content: [
         {
-            title: "Project Overview",
-            navName: "Project Overview",
-            navRef: "project-overview",
-            content: [
-                {
-                    type: "text",
-                    content: [
-                        "The Habitat's Airlock Linkage System project, developed using CAD software (e.g., SolidWorks), aimed to design and optimize a mechanical linkage system, such as a modified four-bar linkage, capable of actuating a button within a specified timeframe.",
-                        "This project challenged us to integrate iterative design methodologies, rigorous engineering analysis, and comprehensive testing protocols to enhance the system's overall performance. The primary focus areas included minimizing mass, reducing stress concentrations through careful design and FEA, and ensuring reliable, repeatable operation, with the ultimate goal of creating a robust and effective mechanical system."
-                    ]
-                },
-                {
-                    type: "image",
-                     content: "/media/images/airlock_final_testing.png",
-                     altContent: "Final testing of the linkage system.",
-                     subtitle: "The linkage system undergoing its final performance testing."
-                 },
-            ]
+          type: "text",
+          content:
+            "Imagine a mechanical device that needs to press a button as fast as possible—like an airlock mechanism on a space habitat. This project designed and optimized a **four-bar linkage** (a classic mechanism with four connected bars that converts rotational motion into complex paths) to actuate a button reliably and quickly. The challenge: minimize weight to maximize speed, while keeping the mechanism strong enough not to break.",
         },
         {
-            title: "Performance Results and Key Improvements",
-            navName: "Results & Improvements",
-            navRef: "summary-results",
-            content: [
-                {
-                    type: "text",
-                    content: [
-                         "Throughout the project, we conducted both intermediate and final performance tests, each requiring the linkage system to actuate a target button within 30 seconds. In the intermediate test, our system achieved an experimental button press time of 27.55 seconds. The final test yielded an improved time of 25.91 seconds, with a slight variance attributed to a minor assembly imprecision.",
-                         "Key improvements implemented during the design process included filleting the edges of the hexagonal hole on a critical link to significantly reduce stress concentrations. Furthermore, we focused on mass optimization, successfully reducing the weight of the links by an impressive 72.4% (e.g., from an initial X grams to a final Y grams). This not only improved material efficiency but also contributed to faster actuation times due to reduced inertia."
-                    ]
-                },
-                {
-                     type: "image",
-                     content: "/media/images/airlock_intermediate.png",
-                    altContent: "Airlock Linkage System Intermediate Testing",
-                     subtitle: "The linkage system during intermediate performance testing."
-                  },
-            ]
+          type: "text",
+          displayAs: "subtitle",
+          content: "Design Goals",
         },
         {
-             title: "Initial Design and Brainstorming Phase",
-             navName: "Initial Design",
-            navRef: "brainstorming-design",
-             content: [
-               {
-                    type: "text",
-                     content: [
-                         "Our initial design process commenced with a simplified single-hole linkage concept. We explored six distinct linkage designs, ultimately selecting the top three based on their geometric advantages and their potential to effectively and reliably actuate the target button.",
-                         "To rapidly explore and visualize the kinematics of different configurations, we utilized an online linkage calculator. This tool enabled us to input various link lengths and pivot point locations, observing the resulting motion paths in real-time. This iterative visualization helped select promising candidates for more detailed analysis and refinement in CAD. The final chosen design was a synthesis of the top two concepts, combining their strong geometric properties and predicting a button press time of approximately 30 seconds based on kinematic simulations."
-                    ]
-                },
-                {
-                     type: "image",
-                     content: "/media/images/airlock_linkage_design.png",
-                      altContent: "Linkage calculator designs and outputs",
-                     subtitle:"Various linkage designs explored using an online kinematic calculator."
-                   },
-            ]
+          type: "text",
+          displayAs: "list",
+          content: [
+            "**Minimize mass** — reduce weight for faster actuation",
+            "**Reduce stress concentrations** — FEA-guided filleting",
+            "**Ensure reliability** — repeatable, robust operation",
+          ],
         },
         {
-           title: "Stress Analysis and FEA Verification",
-           navName: "Stress & FEA",
-            navRef: "stress-analysis-fea",
-            content: [
-                {
-                    type: "text",
-                    content:
-                         ["We conducted stress analysis on three critical orientations: maximized plate height, bending stress on the crank and coupler, and the vertical crank position. The maximized plate height configuration was selected for detailed study. Basic stress was estimated using `\\sigma = F/A` (Force/Area). Finite Element Analysis (FEA) simulations in our CAD software were used to digitally verify these manual stress calculations and to gain a more detailed understanding of stress distributions across the links under load.",
-                         "This allowed us to pinpoint specific areas of high stress (stress concentrations), particularly around holes or sharp corners, which then informed design modifications like adding fillets. Based on these analyses, we chose a conservative quarter-inch thick acrylic and a width of two inches for each link to ensure robustness for the initial tests. The final analysis indicated a high safety factor of 16 (calculated as `FoS = \\text{Material Yield Strength} / \\text{Actual Max Stress}`), with minimal displacement."]
-                },
-                {
-                    type: "text",
-                    content: "Conceptual FBD of a Link",
-                    displayAs: "subtitle"
-                },
-                 {
-                    type: "image",
-                    content: "/media/images/airlock_fea_stress.png",
-                     altContent: "FEA stress analysis of linkage component",
-                    subtitle: "FEA results illustrating stress concentrations on a linkage component."
-                   },
-                {
-                    type: "image",
-                     content: "/media/images/airlock_fea_displacement.png",
-                      altContent: "FEA displacement analysis of linkage component",
-                    subtitle: "FEA results illustrating displacement under load for a linkage component."
-                   },
-            ]
+          type: "image",
+          content: "/media/images/airlock_final_testing.png",
+          altContent: "Final testing of the linkage system.",
+          subtitle: "The linkage system during final performance testing.",
+        },
+      ],
+    },
+    {
+      title: "Performance Results",
+      navName: "Results",
+      navRef: "summary-results",
+      content: [
+        {
+          type: "text",
+          content:
+            "The target: press the button within **30 seconds**. We beat that in both tests, and the final design weighed less than a third of our initial attempt. Here's how the numbers stacked up:",
         },
         {
-             title: "Fabrication, Assembly, and Initial Testing",
-            navName: "Fabrication & Assembly",
-            navRef: "fabrication-assembly",
-             content: [
-                {
-                    type: "text",
-                    content: [
-                         "The fabrication process strictly adhered to a detailed assembly diagram, which provided specific instructions for assembling the crank, rocker, coupler links, and associated washers. During the initial practice assembly and testing, we achieved a button press time of 28 seconds.",
-                         "Based on these initial runs and observations, we identified key areas for improvement. Subsequent design iterations focused on reducing the width of the links to decrease mass and inertia, and adding fillets to critical edges to further reduce stress and enhance the overall reliability and longevity of the system."
-                    ]
-                 },
-                 {
-                     type: "image",
-                     content: "/media/images/airlock_assembly_diagram.png",
-                      altContent: "Assembly Diagram for Airlock Linkage",
-                    subtitle: "Detailed assembly diagram guiding the construction of the optimized linkage system."
-                   },
-            ]
+          type: "text",
+          displayAs: "subtitle",
+          content: "Test Results",
         },
-         {
-           title: "Iterative Design Refinements and Learnings",
-           navName: "Iterative Design",
-           navRef: "iterative-design",
-           content: [
-               {
-                    type: "text",
-                    content: [
-                         "Following initial testing, our team conducted a comprehensive evaluation of the system's performance, leading to targeted design refinements. Key changes included decreasing the width of the links, which successfully reduced mass and rotational inertia, and adding fillets to the edges of the hexagonal hole to mitigate stress concentrations previously identified through FEA.",
-                         "These improvements, guided by an iterative design methodology, allowed the system to achieve a lower button press time and a significant reduction in overall weight while maintaining, and in some cases improving, structural integrity. This phase underscored the value of systematically applying learnings from testing and analysis back into the design cycle."
-                    ]
-                },
-                {
-                    type: "image",
-                     content: "/media/images/airlock_iterative_designs.png",
-                     altContent: "Sketches showing iterative design changes for the linkage",
-                     subtitle: "Sketches and CAD modifications illustrating the iterative design process."
-                },
-            ]
-        }
-    ]
+        {
+          type: "text",
+          displayAs: "list",
+          content: [
+            "**Intermediate test** — 27.55 seconds",
+            "**Final test** — 25.91 seconds",
+            "**Mass reduction** — 72.4% from initial design",
+          ],
+        },
+        {
+          type: "text",
+          content:
+            "Key improvements included **filleting hexagonal hole edges** to reduce stress concentrations and **optimizing link geometry** to reduce mass and inertia.",
+        },
+        {
+          type: "image",
+          content: "/media/images/airlock_intermediate.png",
+          altContent: "Airlock Linkage System Intermediate Testing",
+          subtitle: "Linkage system during intermediate performance testing.",
+        },
+      ],
+    },
+    {
+      title: "Initial Design Phase",
+      navName: "Initial Design",
+      navRef: "brainstorming-design",
+      content: [
+        {
+          type: "text",
+          content:
+            "We didn't just pick one design—we explored **six different linkage configurations** using an online kinematic simulator. Each had different trade-offs in reach, speed, and mechanical advantage. We narrowed down to three finalists, then combined the best features into our final design.",
+        },
+        {
+          type: "text",
+          content:
+            "The selected design predicted ~30 second actuation time based on simulations—right at our target. Good enough to start building and testing.",
+        },
+        {
+          type: "image",
+          content: "/media/images/airlock_linkage_design.png",
+          altContent: "Linkage calculator designs and outputs",
+          subtitle: "Linkage designs explored using an online kinematic calculator.",
+        },
+      ],
+    },
+    {
+      title: "Stress Analysis and FEA",
+      navName: "Stress & FEA",
+      navRef: "stress-analysis-fea",
+      content: [
+        {
+          type: "text",
+          content:
+            "Light is fast, but too light means it breaks. We analyzed three critical positions where the linkage experiences maximum stress—when it's most likely to fail. **Finite Element Analysis (FEA)** simulations showed exactly where stress concentrated: around holes and sharp corners. That's where cracks start, so we added fillets (rounded edges) to spread the load.",
+        },
+        {
+          type: "math",
+          block: true,
+          content: String.raw`\sigma = \frac{F}{A}`,
+          subtitle: "Basic stress calculation (Force / Area)",
+        },
+        {
+          type: "text",
+          content:
+            "**FEA simulations** verified manual calculations and identified stress concentrations around holes and sharp corners, informing fillet additions.",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Material Selection",
+        },
+        {
+          type: "text",
+          displayAs: "list",
+          content: [
+            "**Material** — 1/4\" thick acrylic",
+            "**Link width** — 2 inches",
+            "**Safety factor** — 16× (yield strength / max stress)",
+          ],
+        },
+        {
+          type: "image",
+          content: "/media/images/airlock_fea_stress.png",
+          altContent: "FEA stress analysis of linkage component",
+          subtitle: "FEA stress distribution on linkage component.",
+        },
+        {
+          type: "image",
+          content: "/media/images/airlock_fea_displacement.png",
+          altContent: "FEA displacement analysis of linkage component",
+          subtitle: "FEA displacement under load.",
+        },
+      ],
+    },
+    {
+      title: "Fabrication and Assembly",
+      navName: "Fabrication",
+      navRef: "fabrication-assembly",
+      content: [
+        {
+          type: "text",
+          content:
+            "With the design validated in simulation, we laser-cut the acrylic links and assembled the mechanism. First test: **28 seconds**—faster than predicted! But we saw opportunities to go even faster.",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Identified Improvements",
+        },
+        {
+          type: "text",
+          displayAs: "list",
+          content: [
+            "**Reduce link width** — decrease mass and inertia",
+            "**Add fillets** — reduce stress at critical edges",
+            "**Optimize clearances** — improve assembly precision",
+          ],
+        },
+      ],
+    },
+    {
+      title: "Iterative Design Refinements",
+      navName: "Iterations",
+      navRef: "iterative-design",
+      content: [
+        {
+          type: "text",
+          content:
+            "Engineering is iterative: test, learn, improve, repeat. After the first build, we made targeted changes based on real-world performance and FEA insights. The result? Faster actuation, lower mass, and the same structural safety margin.",
+        },
+        {
+          type: "text",
+          displayAs: "subtitle",
+          content: "Key Learnings",
+        },
+        {
+          type: "text",
+          displayAs: "list",
+          content: [
+            "**Iterative methodology** — systematic application of test learnings",
+            "**FEA-guided design** — data-driven stress reduction",
+            "**Mass optimization** — improved speed without sacrificing strength",
+          ],
+        },
+        {
+          type: "image",
+          content: "/media/images/airlock_iterative_designs.png",
+          altContent: "Sketches showing iterative design changes for the linkage",
+          subtitle: "CAD modifications illustrating the iterative design process.",
+        },
+      ],
+    },
+  ],
 };

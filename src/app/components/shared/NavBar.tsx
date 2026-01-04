@@ -27,8 +27,8 @@ export function NavItem(props: NavItemProps) {
   return (
     <Link
       href={props.href}
-      className={`inline-block text-white px-3 py-2 rounded-md text-sm font-medium transition duration-300 ease-in-out transform hover:text-textHover hover:bg-secondary hover:scale-110 ${
-        isActive ? "bg-secondary" : ""
+      className={`inline-block text-white px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ease-in-out hover:text-[#4FA3E8] hover:bg-[#4FA3E8]/10 hover:shadow-[0_0_12px_rgba(79,163,232,0.3)] ${
+        isActive ? "bg-[#4FA3E8]/20 text-[#4FA3E8] shadow-[0_0_12px_rgba(79,163,232,0.2)]" : ""
       }`}
     >
       {props.text}
@@ -46,7 +46,7 @@ export function NavBar() {
 
   return (
     <div className="flex justify-center w-full p-4 mt-5 mb-5 rounded-lg">
-      <div className="bg-gray-900 p-2 rounded-full border-2 border-contrast space-x-4 pl-5 pr-5">
+      <div className="backdrop-blur-md bg-gray-900/70 p-2 rounded-full border border-[#4FA3E8]/50 shadow-lg shadow-[#4FA3E8]/10 space-x-2 pl-5 pr-5">
         <NavItem currentPath={pathname} text="HOME" href="/" />
         <NavItem currentPath={pathname} text="ABOUT" href="/resume" />
         <NavItem currentPath={pathname} text="PROJECTS" href="/projects" />

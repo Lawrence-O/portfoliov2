@@ -33,7 +33,7 @@ function SocialCard(props: SocialCardProps) {
     // Consider replacing div with <a> for better accessibility if appropriate,
     // or add role="link" and keyboard event handlers (onKeyDown).
     <div
-      className="cursor-pointer transform transition-transform duration-300 hover:scale-110"
+      className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_8px_rgba(79,163,232,0.5)]"
       onClick={handleRedirect}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleRedirect(); }}
       role="link"

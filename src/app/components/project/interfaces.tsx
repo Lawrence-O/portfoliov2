@@ -1,5 +1,6 @@
 export interface Project {
     title: string;
+    subtitle?: string;
     date?: string; 
     media: string;
     githubLink?: string; 
@@ -35,7 +36,14 @@ export interface CodeContentBlock {
     subtitle?: string; 
 }
 
-export type ContentBlock = TextContentBlock | ImageContentBlock | VideoContentBlock | CodeContentBlock;
+export interface MathContentBlock {
+    type: "math";
+    content: string;
+    block?: boolean; // true for block display, false for inline
+    subtitle?: string;
+}
+
+export type ContentBlock = TextContentBlock | ImageContentBlock | VideoContentBlock | CodeContentBlock | MathContentBlock;
   
 export interface Section {
     title: string;

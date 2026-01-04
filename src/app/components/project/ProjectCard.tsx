@@ -14,14 +14,15 @@ export interface ProjectBlurb {
   date?: string; // YYYY-MM-DD
 }
 
-function ProjectContainer(props: ProjectBlurb) {
+function ProjectContainer(props: ProjectBlurb & { index?: number }) {
   const handleClick = () => {
     window.location.href = props.href ?? `/projects/${createSlug(props.title)}`;
   };
 
   return (
     <div
-      className="flex flex-col h-full bg-background p-4 rounded-3xl cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105"
+      className="flex flex-col h-full bg-background p-4 rounded-3xl cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-[1.02] border border-transparent hover:border-[#4FA3E8]/40 hover:shadow-lg hover:shadow-[#4FA3E8]/15 animate-fade-in"
+      style={{ animationDelay: `${(props.index || 0) * 100}ms`, animationFillMode: 'backwards' }}
       onClick={handleClick}
     >
       {props.media.endsWith(".mp4") || props.media.endsWith(".gif") ? (
@@ -41,6 +42,8 @@ function ProjectContainer(props: ProjectBlurb) {
             autoPlay
             loop
             muted
+            playsInline
+            preload="metadata"
           />
         )
       ) : (
@@ -75,11 +78,11 @@ function ProjectContainer(props: ProjectBlurb) {
         )}
         <div className="pl-4 mt-auto pt-5 w-full text-left">
           <Link
-            className="inline-block font-bold text-lg transition duration-300 ease-in-out transform hover:text-textHover hover:scale-110"
+            className="inline-block font-bold text-lg transition-all duration-300 ease-in-out transform hover:text-[#4FA3E8] hover:translate-x-1"
             href={props.href ?? `/projects/${createSlug(props.title)}`}
             onClick={handleClick}
           >
-            Continue Reading
+            Continue Reading →
           </Link>
         </div>
       </div>
@@ -92,7 +95,7 @@ export function ProjectCard(props: { projects: ProjectBlurb[] }) {
     <div className="flex justify-center items-start w-full mt-5 px-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl">
         {props.projects.map((project, index) => (
-          <ProjectContainer key={index} {...project} />
+          <ProjectContainer key={index} index={index} {...project} />
         ))}
       </div>
     </div>
