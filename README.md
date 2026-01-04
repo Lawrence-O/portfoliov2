@@ -2,11 +2,6 @@
 
 Welcome to the repository for my personal portfolio website! This site showcases my projects, skills, and experience in robotics and software engineering.
 
-**Live Demo:** [Your Portfolio URL Here] (Please replace with your actual deployed URL)
-
-[![Portfolio Screenshot](public/media/images/landing-page-author.jpg)](public/media/images/landing-page-author.jpg)
-*(Suggestion: Replace `public/media/images/landing-page-author.jpg` with an actual screenshot of your portfolio's landing page. You can name it `portfolio-screenshot.png` and place it in `public/` or `public/media/images/`)*
-
 ## Description
 
 This portfolio is built with Next.js, React, TypeScript, and Tailwind CSS. It features a clean, modern design with a focus on presenting my work in a clear and accessible manner. Key sections include an interactive resume, detailed project pages, and a showcase of my technical skills. The site is fully responsive and includes a dark mode theme.
