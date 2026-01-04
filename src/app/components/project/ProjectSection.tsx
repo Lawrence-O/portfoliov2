@@ -128,7 +128,7 @@ function CodeBlock({ contentBlock }: { contentBlock: CodeContentBlock }) {
 function ProjectContentCard(props: { contentBlock: ContentBlock }) {
   const { type } = props.contentBlock;
   switch (type) {
-    case "text":
+    case "text": {
       const { content, displayAs, orderedList } = props.contentBlock as TextContentBlock;
       if (displayAs === "list" && Array.isArray(content)) {
         const ListTag = orderedList ? 'ol' : 'ul';
@@ -151,7 +151,8 @@ function ProjectContentCard(props: { contentBlock: ContentBlock }) {
         );
       }
       return <MarkdownText as="p" className="text-sm sm:text-base md:text-lg lg:text-xl leading-6 sm:leading-7 md:leading-8 text-gray-300">{content as string}</MarkdownText>;
-    case "image":
+    }
+    case "image": {
       const { content: imageContent, altContent, subtitle: imageSubtitle } = props.contentBlock as ImageContentBlock;
       return (
         <div className="flex justify-center">
@@ -170,7 +171,8 @@ function ProjectContentCard(props: { contentBlock: ContentBlock }) {
           </div>
         </div>
       );
-    case "video":
+    }
+    case "video": {
       const { content: videoContent, subtitle: videoSubtitle } = props.contentBlock as VideoContentBlock;
       return (
         <div className="flex justify-center">
@@ -181,22 +183,26 @@ function ProjectContentCard(props: { contentBlock: ContentBlock }) {
               controls 
               playsInline
               preload="none"
-            />
+            >
+              <track kind="captions" />
+            </video>
             {videoSubtitle && (
               <p className="mt-2 sm:mt-3 mb-0 text-[10px] sm:text-xs text-center text-gray-400">{videoSubtitle}</p>
             )}
           </div>
         </div>
       );
-      case "code":
-        return <CodeBlock contentBlock={props.contentBlock as CodeContentBlock} />;
-      case "math":
-        const { content: mathContent, block: mathBlock, subtitle: mathSubtitle } = props.contentBlock as MathContentBlock;
-        return (
-          <Math block={mathBlock ?? true} subtitle={mathSubtitle}>
-            {mathContent}
-          </Math>
-        );
+    }
+    case "code":
+      return <CodeBlock contentBlock={props.contentBlock as CodeContentBlock} />;
+    case "math": {
+      const { content: mathContent, block: mathBlock, subtitle: mathSubtitle } = props.contentBlock as MathContentBlock;
+      return (
+        <Math block={mathBlock ?? true} subtitle={mathSubtitle}>
+          {mathContent}
+        </Math>
+      );
+    }
     default:
       return null;
   }

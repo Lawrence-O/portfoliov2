@@ -21,9 +21,12 @@ function ProjectContainer(props: ProjectBlurb & { index?: number }) {
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="flex flex-col h-full bg-background p-4 rounded-3xl cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-[1.02] border border-transparent hover:border-[#4FA3E8]/40 hover:shadow-lg hover:shadow-[#4FA3E8]/15 animate-fade-in"
       style={{ animationDelay: `${(props.index || 0) * 100}ms`, animationFillMode: 'backwards' }}
       onClick={handleClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleClick(); }}
     >
       {props.media.endsWith(".mp4") || props.media.endsWith(".gif") ? (
         props.media.endsWith(".gif") ? (
