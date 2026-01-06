@@ -40,7 +40,7 @@ function SocialCard(props: SocialCardProps) {
       tabIndex={0}
     >
       <Image
-        className="object-fill mx-auto dark:invert"
+        className="object-fill mx-auto invert"
         src={props.iconSrc}
         alt={props.altText}
         width={50}
