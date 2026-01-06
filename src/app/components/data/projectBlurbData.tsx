@@ -14,7 +14,7 @@ export const projects: ProjectBlurb[] = [
     title: "Autonomous Garden Maintenance Robot",
     description:
       "A robot that navigates a garden autonomously, monitors plant health through sensors and imaging, and delivers water and nutrients where needed.",
-    media: "/media/images/garden-robot.jpg",
+    media: "/media/videos/garden_robot_vid.mp4",
     tags: ["Robotics"],
     status: "Under Construction",
     date: "2024-05-01",

@@ -3,8 +3,7 @@ import { Project } from "@/app/components/project/interfaces";
 export const autonomousGardenRobot: Project = {
   title: "Autonomous Garden Maintenance Robot",
   date: "Fall 2023",
-  media: "/media/images/safeguardAgainstPests.png",
-  githubLink: "https://github.com/your-username/autonomous-garden-robot",
+  media: "/media/videos/garden_robot_vid.mp4",
   tags: ["Robotics"],
   section: [
     {
@@ -29,12 +28,6 @@ export const autonomousGardenRobot: Project = {
         {
           type: "text",
           content: "The system runs on **ROS** (Robot Operating System) for high-level control and **FreeRTOS** for real-time motor and sensor operations, all powered by a Jetson Nano.",
-        },
-        {
-          type: "image",
-          content: "/media/images/placeholder_garden_robot_overview.png",
-          altContent: "Conceptual overview diagram of the Autonomous Garden Robot system",
-          subtitle: "High-level system overview of the garden robot.",
         }
       ],
     },
@@ -107,34 +100,10 @@ export const autonomousGardenRobot: Project = {
             displayAs: "list",
             content: "**Movement:** Tread-based drivetrain for navigating over soil, grass, and uneven terrain.\n**Dispensing:** Reservoirs and a spray nozzle deliver measured amounts of water or liquid nutrients.\n**Plant Monitoring:** Linear actuator extends a soil probe; stereo camera captures plant images.\n**Navigation:** LiDAR-based SLAM builds a map; fiducial markers help identify specific plant locations.",
           },
-         {
-            type: "image",
-            content: "/media/images/functional_decomposition.png",
-            altContent: "Functional Decomposition Diagram",
-            subtitle: "Functional breakdown of robot subsystems."
-         },
-        {
-           type: "image",
-           content: "/media/images/hardware-firmware-layer.png",
-           altContent: "Diagram of Software and Hardware Architecture",
-           subtitle: "Software and hardware architecture layers.",
-        },
-         {
-            type: "image",
-            content: "/media/images/JetsonNanoIO.png",
-            altContent: "Diagram of the Jetson Nano's IO ports",
-            subtitle: "Jetson Nano I/O connections to each subsystem.",
-         },
         {
            type: "text",
            content: "The web interface runs on **Django** hosted on AWS EC2, letting users view plant data and photos from anywhere.",
         },
-        {
-             type: "image",
-             content: "/media/images/middleware.png",
-             altContent: "Diagram showcasing the middleware and data flow",
-             subtitle: "Data flow through the robot's middleware.",
-          },
           {
             type: "text",
             displayAs: "subtitle",
@@ -199,18 +168,6 @@ export const autonomousGardenRobot: Project = {
                     displayAs: "list",
                     content: "**LiDAR sensor:** Scans surroundings to build a navigation map.\n**Stereo camera:** Captures plant images and helps with localization.\n**Soil probe:** Custom sensor on a linear actuator measures moisture, pH, and temperature.\n**Dispensing system:** 3D-printed reservoirs and a 60° cone nozzle for precise water/nutrient delivery.\n**Tread drivetrain:** Provides traction on soil, grass, and gravel.",
                 },
-                {
-                    type: "image",
-                    content: "/media/images/robot_components.png",
-                    altContent: "CAD model of the robot design",
-                    subtitle: "Fully assembled robot CAD model.",
-                 },
-                 {
-                     type: "image",
-                     content: "/media/images/parts_and_components.png",
-                     altContent: "Bill of Materials",
-                     subtitle: "Bill of materials for core components.",
-                   },
             ]
         },
        {
@@ -236,18 +193,6 @@ export const autonomousGardenRobot: Project = {
                     type: "text",
                     content: "Due to time constraints, the photo capture test used teleoperation rather than full autonomy, but all other tests ran autonomously.",
                   },
-              {
-                type: "image",
-                 content: "/media/images/soil_sensor.png",
-                 altContent: "A soil sensor being used to probe a soil sample",
-                   subtitle: "Soil probe during testing.",
-                },
-                {
-                 type: "image",
-                  content: "/media/images/soil_upload.png",
-                  altContent: "An image of data being uploaded to the server.",
-                    subtitle: "Sensor data uploading to the web server.",
-                },
          ],
         },
          {
