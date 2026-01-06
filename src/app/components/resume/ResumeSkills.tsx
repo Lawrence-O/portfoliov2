@@ -16,7 +16,7 @@ function ResumeSkillCard(props: { skill: skill } & { index: number }) {
       {/* Container for the image to control its size and ensure alignment */}
       <div className="h-10 w-10 sm:h-12 sm:w-12 mb-2 flex items-center justify-center">
         <Image
-          className="object-contain dark:invert" // Changed to object-contain
+          className="object-contain invert" // Changed to object-contain
           src={props.skill.href ?? ""}
           alt={`${props.skill.skill} icon`} // Added descriptive alt text
           width={48} // Adjusted for sm:h-12 sm:w-12 (12 * 4px = 48px)
